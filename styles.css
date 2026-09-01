@@ -49,6 +49,25 @@ body::before {
   pointer-events: none;
 }
 
+body.view-mode {
+  background:
+    radial-gradient(ellipse at 50% -10%, rgba(242, 198, 92, .16), transparent 28rem),
+    radial-gradient(ellipse at 0 26%, rgba(17, 108, 106, .31), transparent 30rem),
+    radial-gradient(ellipse at 100% 43%, rgba(114, 69, 35, .22), transparent 28rem),
+    linear-gradient(156deg, #071a20 0%, #031117 42%, #071b20 100%);
+}
+
+body.view-mode::before {
+  z-index: 0;
+  opacity: .34;
+  background-image:
+    linear-gradient(90deg, rgba(244, 204, 102, .07) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(244, 204, 102, .06) 1px, transparent 1px),
+    linear-gradient(135deg, transparent 48%, rgba(53, 158, 148, .16) 49%, transparent 51%, transparent 52%);
+  background-size: 46px 28px, 46px 28px, 94px 94px;
+  mask-image: linear-gradient(to bottom, black, rgba(0, 0, 0, .55) 70%, transparent);
+}
+
 body.modal-open { overflow: hidden; }
 
 button,
@@ -128,38 +147,115 @@ textarea:focus-visible {
 
 .view-mode .merchant-profile {
   position: relative;
+  isolation: isolate;
   direction: rtl;
   display: block;
-  margin: 0 0 9px;
-  padding: 7px 0 10px;
+  margin: 0 0 12px;
+  padding: 12px 6px 4px;
   text-align: center;
 }
 
-.view-mode .merchant-profile::before,
-.view-mode .merchant-profile::after { display: none; }
+.view-mode .merchant-profile::before {
+  position: absolute;
+  z-index: -1;
+  top: 18px;
+  right: 0;
+  left: 0;
+  height: 135px;
+  content: "";
+  background:
+    linear-gradient(90deg, transparent 0 5%, rgba(242, 198, 92, .28) 5% 5.4%, transparent 5.4% 94.6%, rgba(242, 198, 92, .28) 94.6% 95%, transparent 95%),
+    linear-gradient(90deg, transparent, rgba(27, 113, 110, .52), transparent);
+  clip-path: polygon(0 100%, 0 30%, 5% 30%, 5% 14%, 12% 14%, 12% 30%, 20% 30%, 20% 0, 27% 0, 27% 30%, 73% 30%, 73% 0, 80% 0, 80% 30%, 88% 30%, 88% 14%, 95% 14%, 95% 30%, 100% 30%, 100% 100%);
+  opacity: .74;
+}
 
-.merchant-lockup {
-  width: clamp(132px, 40vw, 148px);
-  height: auto;
-  display: block;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, .32);
+.view-mode .merchant-profile::after {
+  position: absolute;
+  z-index: -1;
+  right: 16%;
+  bottom: 28px;
+  left: 16%;
+  height: 1px;
+  content: "";
+  background: linear-gradient(90deg, transparent, rgba(242, 198, 92, .88), transparent);
+}
+
+.merchant-crown {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 238px);
+  min-height: 72px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto -9px;
+  padding: 19px 22px 8px;
+  color: #fff1c5;
+  background: linear-gradient(180deg, rgba(45, 27, 13, .93), rgba(10, 31, 32, .95));
+  border: 1px solid rgba(251, 210, 103, .83);
+  border-radius: 5px 5px 20px 20px;
+  box-shadow: inset 0 0 0 3px rgba(110, 69, 25, .57), 0 10px 28px rgba(0, 0, 0, .4);
+}
+
+.merchant-crown::before,
+.merchant-crown::after {
+  position: absolute;
+  top: 7px;
+  width: 9px;
+  height: 9px;
+  content: "";
+  background: var(--gold);
+  box-shadow: 0 0 12px rgba(242, 198, 92, .65);
+  transform: rotate(45deg);
+}
+
+.merchant-crown::before { right: 16px; }
+.merchant-crown::after { left: 16px; }
+
+.crown-tip {
+  position: absolute;
+  top: -16px;
+  width: 30px;
+  height: 31px;
+  background: linear-gradient(135deg, #ffe6a0, #9d6920);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  filter: drop-shadow(0 -1px 0 #f8d67b);
+}
+
+.crown-tip-one { right: 27px; }
+.crown-tip-two { right: calc(50% - 15px); top: -25px; height: 40px; }
+.crown-tip-three { left: 27px; }
+.crown-gem { position: absolute; top: 18px; color: #56d7cc; font-size: 10px; text-shadow: 0 0 8px #56d7cc; }
+.merchant-name { position: relative; z-index: 1; font: 900 clamp(27px, 8.5vw, 36px)/.85 Georgia, Tahoma, serif; letter-spacing: .04em; text-shadow: 0 2px 0 #5f3714, 0 0 14px rgba(250, 215, 128, .28); }
+.merchant-role { margin-top: 5px; color: #e5c16c; font-size: 8px; font-weight: 900; letter-spacing: .09em; }
+
+.merchant-stage {
+  position: relative;
+  z-index: 1;
+  width: clamp(126px, 38vw, 154px);
+  aspect-ratio: 1096 / 1435;
+  display: grid;
+  place-items: end center;
+  margin: 0 auto;
+  overflow: visible;
+}
+
+.merchant-aura {
+  position: absolute;
+  inset: 13px 6px 0;
+  background: radial-gradient(ellipse at 50% 36%, rgba(74, 207, 193, .38), rgba(242, 198, 92, .2) 33%, transparent 68%);
+  filter: blur(4px);
 }
 
 .merchant-portrait {
   position: relative;
   z-index: 1;
-  width: 72px;
-  aspect-ratio: 4 / 5;
-  margin: 5px auto 0;
-  background-image:
-    linear-gradient(to top, rgba(6, 21, 25, .24), transparent 48%),
-    url("assets/brand/belqois-identity.png");
-  background-repeat: no-repeat;
-  background-position: center, 6% 27%;
-  background-size: 100% 100%, 300% auto;
-  border: 1px solid rgba(242, 198, 92, .7);
-  border-radius: 18px 7px 18px 7px;
-  box-shadow: inset 0 0 0 3px rgba(5, 23, 28, .52), 0 9px 21px rgba(0, 0, 0, .35);
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 8px 13px rgba(0, 0, 0, .52));
 }
 
 .merchant-copy {
@@ -178,14 +274,18 @@ textarea:focus-visible {
   direction: rtl;
   align-items: center;
   justify-content: center;
-  gap: 9px;
-  margin-top: 7px;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 7px 9px;
+  background: linear-gradient(90deg, rgba(3, 16, 20, .36), rgba(8, 42, 43, .74), rgba(3, 16, 20, .36));
+  border: 1px solid rgba(72, 179, 166, .26);
+  border-radius: 999px;
 }
 
 .merchant-tagline {
   margin: 0;
-  color: #d8e6de;
-  font-size: 10px;
+  color: #e7e7cf;
+  font-size: 9px;
   line-height: 1.6;
   white-space: nowrap;
 }
@@ -199,8 +299,8 @@ textarea:focus-visible {
   gap: 7px;
   padding: 6px 10px 6px 7px;
   color: #fff7dc;
-  background: rgba(5, 45, 42, .9);
-  border: 1px solid rgba(37, 211, 102, .66);
+  background: linear-gradient(135deg, rgba(4, 51, 44, .97), rgba(3, 32, 32, .97));
+  border: 1px solid rgba(37, 211, 102, .76);
   border-radius: 999px;
   box-shadow: 0 7px 18px rgba(0, 0, 0, .2);
   font-size: 11px;
@@ -275,7 +375,7 @@ textarea:focus-visible {
 .view-price[hidden] { display: none; }
 .view-price strong { direction: ltr; font: 900 28px/1 Georgia, "Times New Roman", serif; letter-spacing: .02em; }
 
-.view-mode .welcome-card { padding-block: 23px; text-align: center; }
+.view-mode .welcome-card { padding-block: 23px; text-align: center; background: linear-gradient(135deg, rgba(13, 55, 56, .95), rgba(5, 25, 31, .97)); border-color: rgba(242, 198, 92, .32); }
 .view-mode .welcome-card h2 { margin-inline: auto; }
 .castle-level-inline { direction: ltr; unicode-bidi: isolate; white-space: nowrap; }
 .view-mode .welcome-eyebrow { font-size: 11px; }
@@ -675,8 +775,7 @@ textarea:focus-visible {
 
 @media (min-width: 600px) {
   .editor-shell { padding-inline: 18px; }
-  .merchant-lockup { width: 154px; }
-  .merchant-portrait { width: 78px; }
+  .merchant-stage { width: 162px; }
   .merchant-tagline { font-size: 11px; }
   .merchant-contact { padding-inline: 11px 8px; }
   .merchant-contact bdi { font-size: 12px; }
@@ -696,8 +795,8 @@ textarea:focus-visible {
   .editor-shell { padding-inline: 8px; }
   .editor-header { grid-template-columns: 44px minmax(0, 1fr); }
   .brand-mark { width: 41px; height: 41px; }
-  .merchant-lockup { width: 132px; }
-  .merchant-portrait { width: 68px; }
+  .merchant-crown { width: 214px; }
+  .merchant-stage { width: 118px; }
   .merchant-actions { gap: 6px; }
   .merchant-tagline { font-size: 9px; }
   .merchant-contact bdi { font-size: 10px; }
