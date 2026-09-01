@@ -44,6 +44,9 @@ const FORM_KEYS = [
   "golden_seal",
   "blue_equipment",
   "purple_equipment",
+  "gold_equipment",
+  "infantry_banner_power",
+  "siege_banner_power",
   "bag_description",
   "additional_heroes",
   "legion_capacity",
@@ -61,6 +64,9 @@ const PUBLIC_FORM_ALIASES = {
   g: "golden_seal",
   e: "blue_equipment",
   u: "purple_equipment",
+  ge: "gold_equipment",
+  ib: "infantry_banner_power",
+  sb: "siege_banner_power",
   k: "bag_description",
   x: "additional_heroes",
   q: "legion_capacity",
@@ -76,6 +82,9 @@ const PUBLIC_FIELD_PRESENTATION = {
   golden_seal: { unit: "ختم" },
   blue_equipment: { unit: "قطعة" },
   purple_equipment: { unit: "قطعة" },
+  gold_equipment: { unit: "قطعة" },
+  infantry_banner_power: { unit: "مليون", scale: 1_000_000 },
+  siege_banner_power: { unit: "مليون", scale: 1_000_000 },
   bag_description: { text: true },
   additional_heroes: { text: true },
   legion_capacity: { unit: "ألف", scale: 1_000 },
@@ -519,7 +528,7 @@ function setupPublicView() {
   ui.ownerTitle.textContent = "مواصفات القلعة";
   ui.ownerDescription.textContent = "المستوى وأهم بيانات الحساب";
   ui.powerDescription.textContent = "الأرقام الأساسية في لمحة واضحة";
-  ui.equipmentDescription.textContent = "القطع المميزة حسب اللون";
+  ui.equipmentDescription.textContent = "القطع المميزة حسب اللون وقوة الراية أثناء ارتداء العتاد";
   ui.detailsDescription.textContent = "محتويات الحقيبة وباقي التفاصيل المهمة للقلعة";
   ui.bagDescriptionLabel.textContent = "وصف الحقيبة";
   ui.heroesDescription.textContent = "تشكيلة الأبطال وحالة الأهلة لكل بطل";
