@@ -6,9 +6,9 @@
   <meta name="theme-color" content="#051b24">
   <title>بلقيس | بيانات عرض القلعة</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="styles.css?v=20260901-5">
+  <link rel="stylesheet" href="styles.css?v=20260901-6">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script src="app.js?v=20260901-5" defer></script>
+  <script src="app.js?v=20260901-6" defer></script>
 </head>
 <body>
   <main class="editor-shell" id="heroEditor">
@@ -23,18 +23,18 @@
 
     <section class="merchant-profile" aria-label="هوية التاجرة BELQOIS">
       <div class="merchant-copy">
-        <div class="merchant-heading">
-          <span class="merchant-kicker">التاجرة</span>
-          <div class="merchant-nameplate">
-            <span class="merchant-crown" aria-hidden="true"></span>
-            <strong lang="en">BELQOIS</strong>
-          </div>
-        </div>
+        <img class="merchant-lockup" src="assets/brand/belqois-lockup.png" alt="التاجرة BELQOIS">
         <div class="merchant-portrait" role="img" aria-label="صورة التاجرة BELQOIS"></div>
-        <p class="merchant-tagline">كل خدمات لعبتك في مكان واحد</p>
-        <a class="merchant-contact" href="https://wa.me/201020774509" target="_blank" rel="noopener noreferrer" aria-label="واتساب التاجرة BELQOIS على رقم موجب عشرين 1020774509">
-          <span>واتساب</span><bdi dir="ltr">+201020774509</bdi>
-        </a>
+        <div class="merchant-actions">
+          <p class="merchant-tagline">كل خدمات لعبتك في مكان واحد</p>
+          <a class="merchant-contact" href="https://wa.me/201020774509" target="_blank" rel="noopener noreferrer" aria-label="واتساب التاجرة BELQOIS على رقم موجب عشرين 1020774509">
+            <svg class="whatsapp-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path class="whatsapp-bubble" d="M12 1.5a10.5 10.5 0 0 0-9 15.9L1.7 22l4.7-1.2A10.5 10.5 0 1 0 12 1.5z"></path>
+              <path class="whatsapp-receiver" d="M8.1 5.4c.4-.2.9 0 1.1.4l1.2 2.8c.2.4.1.8-.2 1.1l-1 1c.9 1.8 2.3 3.2 4.1 4.1l1-1c.3-.3.8-.4 1.1-.2l2.8 1.2c.4.2.6.7.4 1.1l-.6 2c-.1.4-.5.7-.9.7-7.1 0-12.9-5.8-12.9-12.9 0-.4.3-.8.7-.9z"></path>
+            </svg>
+            <bdi dir="ltr">+201020774509</bdi>
+          </a>
+        </div>
       </div>
     </section>
 
@@ -64,8 +64,8 @@
             <span>مستوى القلعة <b aria-hidden="true">*</b></span>
             <select data-form-key="castle_level" name="castle_level" required>
               <option value="">اختر المستوى</option>
-              <option value="30">30</option><option value="31">31</option><option value="32">32</option>
-              <option value="33">33</option><option value="34">34</option><option value="35">35</option>
+              <option value="30">30</option><option value="31" dir="ltr">★ 1</option><option value="32" dir="ltr">★ 2</option>
+              <option value="33" dir="ltr">★ 3</option><option value="34" dir="ltr">★ 4</option><option value="35" dir="ltr">★ 5</option>
             </select>
           </label>
         </div>

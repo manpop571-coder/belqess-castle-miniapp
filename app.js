@@ -65,6 +65,7 @@ const PUBLIC_FORM_ALIASES = {
   i: "firing_power",
 };
 const PUBLIC_FIELD_PRESENTATION = {
+  castle_level: { castleLevel: true },
   honor_badges: { unit: "شارة" },
   science_power: { unit: "مليون", scale: 1_000_000 },
   compensated_power: { unit: "مليون", scale: 1_000_000 },
@@ -265,6 +266,38 @@ function formatPublicFieldValue(rawValue, scale = 1) {
   return new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(scaled);
 }
 
+function formatCastleLevel(rawValue) {
+  const raw = String(rawValue ?? "").trim();
+  if (!raw) return "—";
+  const numeric = Number(raw);
+  if (!Number.isInteger(numeric) || numeric < 0) return "غير محدد";
+  if (numeric >= 31 && numeric <= 35) return `★ ${numeric - 30}`;
+  return new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(numeric);
+}
+
+function describeCastleLevel(rawValue) {
+  const raw = String(rawValue ?? "").trim();
+  const numeric = Number(raw);
+  if (!raw || !Number.isInteger(numeric) || numeric < 0) return "غير محدد";
+  if (numeric <= 30 || numeric > 35) return `المستوى ${numeric}`;
+  const stars = numeric - 30;
+  if (stars === 1) return "نجمة واحدة";
+  if (stars === 2) return "نجمتان";
+  return `${stars} نجوم`;
+}
+
+function renderPublicWelcomeTitle(level) {
+  const levelNode = document.createElement("bdi");
+  levelNode.dir = "ltr";
+  levelNode.className = "castle-level-inline";
+  levelNode.textContent = level;
+  ui.welcomeTitle.replaceChildren(
+    document.createTextNode("قلعة مستوى "),
+    levelNode,
+    document.createTextNode(" — المواصفات والأبطال"),
+  );
+}
+
 function renderPublicSpecifications() {
   for (const field of ui.formFields) {
     if (field.closest(".owner-private-field")) continue;
@@ -294,7 +327,9 @@ function renderPublicSpecifications() {
 
     const displayValue = presentation.text
       ? rawValue
-      : formatPublicFieldValue(rawValue, presentation.scale);
+      : presentation.castleLevel
+        ? formatCastleLevel(rawValue)
+        : formatPublicFieldValue(rawValue, presentation.scale);
     output.classList.toggle("is-text", Boolean(presentation.text));
     output.classList.toggle("is-empty", !rawValue);
     output.replaceChildren();
@@ -307,11 +342,14 @@ function renderPublicSpecifications() {
       unitNode.textContent = presentation.unit;
       output.append(unitNode);
     }
-    output.setAttribute("aria-label", `${label}: ${displayValue}${presentation.unit && rawValue ? ` ${presentation.unit}` : ""}`);
+    const accessibleValue = presentation.castleLevel ? describeCastleLevel(rawValue) : displayValue;
+    output.setAttribute("aria-label", `${label}: ${accessibleValue}${presentation.unit && rawValue ? ` ${presentation.unit}` : ""}`);
   }
 
-  const level = formatPublicFieldValue(publicViewData?.form?.castle_level);
-  if (level !== "—") ui.welcomeTitle.textContent = `قلعة مستوى ${level} — المواصفات والأبطال`;
+  const level = formatCastleLevel(publicViewData?.form?.castle_level);
+  if (level !== "غير محدد" && level !== "—") {
+    renderPublicWelcomeTitle(level);
+  }
 }
 
 function normalizeSelection(items) {
