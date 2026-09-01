@@ -3,9 +3,6 @@ const HERO_ROOT = "assets/game/heroes/";
 const WAKE_ROOT = "assets/game/wake/";
 const TELEGRAM_PAYLOAD_LIMIT = 4096;
 const WHATSAPP_PHONE = "201020774509";
-const SHARE_ARTWORK_URL = "assets/brand/belqois-castle-identity-v3.png";
-const SHARE_IMAGE_WIDTH = 1080;
-const SHARE_IMAGE_HEIGHT = 1440;
 
 const HERO_DISPLAY = [
   { id: 55, name: "مختار", category: "infantry" },
@@ -87,8 +84,8 @@ const PUBLIC_FIELD_PRESENTATION = {
   blue_equipment: { unit: "قطعة" },
   purple_equipment: { unit: "قطعة" },
   gold_equipment: { unit: "قطعة" },
-  infantry_banner_power: { unit: "مليون", scale: 1_000_000 },
-  siege_banner_power: { unit: "مليون", scale: 1_000_000 },
+  infantry_banner_power: { unit: "%" },
+  siege_banner_power: { unit: "%" },
   bag_description: { text: true },
   additional_heroes: { text: true },
   legion_capacity: { unit: "ألف", scale: 1_000 },
@@ -131,11 +128,6 @@ const ui = {
   listingBadge: document.getElementById("listingBadge"),
   whatsappContact: document.getElementById("whatsappContact"),
   whatsappContactHint: document.getElementById("whatsappContactHint"),
-  adSharePanel: document.getElementById("adSharePanel"),
-  adShareHint: document.getElementById("adShareHint"),
-  shareAdImage: document.getElementById("shareAdImage"),
-  shareAdImageLabel: document.getElementById("shareAdImageLabel"),
-  adShareStatus: document.getElementById("adShareStatus"),
   welcomeEyebrow: document.getElementById("welcomeEyebrow"),
   welcomeTitle: document.getElementById("welcomeTitle"),
   welcomeText: document.getElementById("welcomeText"),
@@ -185,8 +177,6 @@ const state = {
   returnFocus: null,
   viewMode: viewModeRequested,
 };
-
-let cachedAdShareAsset = null;
 
 function escapeHtml(value) {
   return String(value)
@@ -531,267 +521,10 @@ function setupTelegram() {
   }
 }
 
-function publicListingUrl() {
-  const url = new URL(window.location.href);
-  url.search = "";
-  return url.href;
-}
-
 function whatsappInterestMessage() {
-  const message = listingId
+  return listingId
     ? `مرحبًا يا بلقيس، أنا مهتم بالإعلان رقم ${listingId}`
     : "مرحبًا يا بلقيس، أنا مهتم بأحد إعلاناتك";
-  if (!listingId || !publicViewData || !window.location.hash.startsWith("#view=")) return message;
-  return `${message}\nرابط عرض القلعة: ${publicListingUrl()}`;
-}
-
-function roundedCanvasPath(context, x, y, width, height, radius) {
-  const corner = Math.min(Math.max(0, radius), width / 2, height / 2);
-  context.beginPath();
-  context.moveTo(x + corner, y);
-  context.lineTo(x + width - corner, y);
-  context.quadraticCurveTo(x + width, y, x + width, y + corner);
-  context.lineTo(x + width, y + height - corner);
-  context.quadraticCurveTo(x + width, y + height, x + width - corner, y + height);
-  context.lineTo(x + corner, y + height);
-  context.quadraticCurveTo(x, y + height, x, y + height - corner);
-  context.lineTo(x, y + corner);
-  context.quadraticCurveTo(x, y, x + corner, y);
-  context.closePath();
-}
-
-function fillPosterRoundRect(context, x, y, width, height, radius, fillStyle, strokeStyle = "") {
-  roundedCanvasPath(context, x, y, width, height, radius);
-  context.fillStyle = fillStyle;
-  context.fill();
-  if (strokeStyle) {
-    context.strokeStyle = strokeStyle;
-    context.lineWidth = 2;
-    context.stroke();
-  }
-}
-
-function drawPosterText(context, text, x, y, font, color, { direction = "rtl", maxWidth } = {}) {
-  context.save();
-  context.direction = direction;
-  context.textAlign = "center";
-  context.textBaseline = "middle";
-  context.font = font;
-  context.fillStyle = color;
-  if (maxWidth) context.fillText(String(text), x, y, maxWidth);
-  else context.fillText(String(text), x, y);
-  context.restore();
-}
-
-function posterMetric(key) {
-  const rawValue = String(publicViewData?.form?.[key] ?? "").trim();
-  if (!rawValue) return "—";
-  const presentation = PUBLIC_FIELD_PRESENTATION[key] || {};
-  const value = formatPublicFieldValue(rawValue, presentation.scale);
-  return presentation.unit ? `${value} ${presentation.unit}` : value;
-}
-
-function drawPosterMetricCard(context, x, label, value) {
-  const width = 315;
-  const y = 1182;
-  const height = 145;
-  const cardGradient = context.createLinearGradient(x, y, x, y + height);
-  cardGradient.addColorStop(0, "rgba(12, 80, 84, .96)");
-  cardGradient.addColorStop(1, "rgba(4, 36, 44, .98)");
-  fillPosterRoundRect(context, x, y, width, height, 24, cardGradient, "rgba(68, 211, 195, .38)");
-  drawPosterText(context, label, x + width / 2, y + 43, '800 26px Tahoma, "Segoe UI", Arial, sans-serif', "#bcd8d4", { maxWidth: width - 30 });
-  drawPosterText(context, value, x + width / 2, y + 98, '900 39px Tahoma, "Segoe UI", Arial, sans-serif', "#fff5dc", { maxWidth: width - 28 });
-}
-
-function loadShareArtwork() {
-  return new Promise((resolve, reject) => {
-    const image = new Image();
-    image.decoding = "async";
-    image.onload = () => resolve(image);
-    image.onerror = () => reject(new Error("share-artwork-not-found"));
-    image.src = new URL(SHARE_ARTWORK_URL, document.baseURI).href;
-  });
-}
-
-function canvasToPngBlob(canvas) {
-  return new Promise((resolve, reject) => {
-    canvas.toBlob(blob => {
-      if (blob) resolve(blob);
-      else reject(new Error("share-image-not-created"));
-    }, "image/png");
-  });
-}
-
-async function createAdShareAsset() {
-  if (cachedAdShareAsset) return cachedAdShareAsset;
-
-  const canvas = document.createElement("canvas");
-  canvas.width = SHARE_IMAGE_WIDTH;
-  canvas.height = SHARE_IMAGE_HEIGHT;
-  const context = canvas.getContext("2d", { alpha: false });
-  if (!context) throw new Error("canvas-not-supported");
-
-  const pageGradient = context.createLinearGradient(0, 0, 0, SHARE_IMAGE_HEIGHT);
-  pageGradient.addColorStop(0, "#061926");
-  pageGradient.addColorStop(.72, "#071d27");
-  pageGradient.addColorStop(1, "#031117");
-  context.fillStyle = pageGradient;
-  context.fillRect(0, 0, SHARE_IMAGE_WIDTH, SHARE_IMAGE_HEIGHT);
-
-  const artwork = await loadShareArtwork().catch(() => null);
-  if (artwork) {
-    const sourceSize = Math.min(artwork.naturalWidth, artwork.naturalHeight);
-    const sourceX = (artwork.naturalWidth - sourceSize) / 2;
-    const sourceY = (artwork.naturalHeight - sourceSize) / 2;
-    context.drawImage(artwork, sourceX, sourceY, sourceSize, sourceSize, 0, 0, SHARE_IMAGE_WIDTH, SHARE_IMAGE_WIDTH);
-  } else {
-    const glow = context.createRadialGradient(540, 330, 20, 540, 330, 610);
-    glow.addColorStop(0, "rgba(36, 146, 158, .75)");
-    glow.addColorStop(1, "rgba(3, 17, 23, 0)");
-    context.fillStyle = glow;
-    context.fillRect(0, 0, SHARE_IMAGE_WIDTH, SHARE_IMAGE_WIDTH);
-  }
-
-  const artworkShade = context.createLinearGradient(0, 610, 0, 1110);
-  artworkShade.addColorStop(0, "rgba(2, 13, 20, 0)");
-  artworkShade.addColorStop(.58, "rgba(2, 15, 23, .2)");
-  artworkShade.addColorStop(1, "rgba(2, 15, 23, .98)");
-  context.fillStyle = artworkShade;
-  context.fillRect(0, 610, SHARE_IMAGE_WIDTH, 510);
-
-  const bottomGradient = context.createLinearGradient(0, 1050, 0, SHARE_IMAGE_HEIGHT);
-  bottomGradient.addColorStop(0, "rgba(3, 18, 25, .82)");
-  bottomGradient.addColorStop(1, "#031117");
-  context.fillStyle = bottomGradient;
-  context.fillRect(0, 1050, SHARE_IMAGE_WIDTH, SHARE_IMAGE_HEIGHT - 1050);
-
-  drawPosterText(context, "بلقيس", 540, 833, '900 68px Georgia, Tahoma, "Segoe UI", serif', "#ffe3a0");
-  drawPosterText(context, "لكل خدمات لعبتك", 540, 892, '900 27px Tahoma, "Segoe UI", Arial, sans-serif', "#e3c475");
-  drawPosterText(context, `إعلان قلعة رقم ${listingId}`, 540, 961, '900 52px Tahoma, "Segoe UI", Arial, sans-serif', "#fff7e5", { maxWidth: 900 });
-  drawPosterText(context, `قلعة مستوى ${formatCastleLevel(publicViewData?.form?.castle_level)}`, 540, 1021, '900 34px Tahoma, "Segoe UI", Arial, sans-serif', "#6ce1d3", { maxWidth: 860 });
-
-  const priceGradient = context.createLinearGradient(330, 1070, 750, 1160);
-  priceGradient.addColorStop(0, "#e5ae35");
-  priceGradient.addColorStop(.55, "#ffe6a5");
-  priceGradient.addColorStop(1, "#d99b24");
-  fillPosterRoundRect(context, 330, 1061, 420, 94, 47, priceGradient, "rgba(255, 244, 200, .92)");
-  drawPosterText(context, `السعر  ${formatPublicPrice(publicViewData?.price)}`, 540, 1108, '900 48px Tahoma, "Segoe UI", Arial, sans-serif', "#2f2100", { maxWidth: 375 });
-
-  drawPosterMetricCard(context, 45, "قوة العلوم", posterMetric("science_power"));
-  drawPosterMetricCard(context, 382, "القوة المعوّضة", posterMetric("compensated_power"));
-  drawPosterMetricCard(context, 719, "أبطال الإعلان", selectedLabel(state.selected.size));
-
-  const footerLine = context.createLinearGradient(80, 0, 1000, 0);
-  footerLine.addColorStop(0, "rgba(242, 198, 92, 0)");
-  footerLine.addColorStop(.5, "rgba(242, 198, 92, .82)");
-  footerLine.addColorStop(1, "rgba(242, 198, 92, 0)");
-  context.fillStyle = footerLine;
-  context.fillRect(80, 1360, 920, 2);
-  drawPosterText(context, `للتواصل عبر واتساب  +${WHATSAPP_PHONE}`, 540, 1399, '800 27px Tahoma, "Segoe UI", Arial, sans-serif', "#e7cf91", { maxWidth: 920 });
-
-  const blob = await canvasToPngBlob(canvas);
-  const filename = `belqess-ad-${listingId}.png`;
-  const file = typeof File === "function"
-    ? new File([blob], filename, { type: "image/png", lastModified: Date.now() })
-    : null;
-  cachedAdShareAsset = { blob, file, filename };
-  return cachedAdShareAsset;
-}
-
-function canShareAdFile(file) {
-  if (!file || typeof navigator.share !== "function" || typeof navigator.canShare !== "function") return false;
-  try {
-    return navigator.canShare({ files: [file] });
-  } catch {
-    return false;
-  }
-}
-
-function setAdShareStatus(message, { error = false, success = false } = {}) {
-  if (!ui.adShareStatus) return;
-  ui.adShareStatus.textContent = message;
-  ui.adShareStatus.classList.toggle("is-error", error);
-  ui.adShareStatus.classList.toggle("is-success", success);
-}
-
-function downloadAdShareAsset(asset) {
-  const objectUrl = URL.createObjectURL(asset.blob);
-  const link = document.createElement("a");
-  link.href = objectUrl;
-  link.download = asset.filename;
-  link.rel = "noopener";
-  document.body.append(link);
-  link.click();
-  link.remove();
-  window.setTimeout(() => URL.revokeObjectURL(objectUrl), 30000);
-}
-
-async function prepareAdShare() {
-  if (!state.viewMode || !publicViewData || !ui.adSharePanel || !ui.shareAdImage) return;
-  ui.adSharePanel.hidden = false;
-  ui.shareAdImage.disabled = true;
-  ui.shareAdImageLabel.textContent = "جاري تجهيز صورة الإعلان…";
-  setAdShareStatus("يتم تجهيز صورة واضحة للإعلان.");
-
-  try {
-    const asset = await createAdShareAsset();
-    const nativeShare = canShareAdFile(asset.file);
-    ui.shareAdImage.dataset.shareMode = nativeShare ? "native" : "download";
-    ui.shareAdImageLabel.textContent = nativeShare ? "مشاركة صورة الإعلان" : "تنزيل صورة الإعلان";
-    ui.adShareHint.textContent = nativeShare
-      ? "اضغط ثم اختر واتساب من قائمة المشاركة؛ زر المحادثة الأخضر لا يرفق ملفًا تلقائيًا."
-      : "نزّل الصورة ثم افتح واتساب من الزر الأخضر وأرفقها يدويًا.";
-    ui.shareAdImage.disabled = false;
-    setAdShareStatus("");
-  } catch {
-    ui.shareAdImageLabel.textContent = "تعذّر تجهيز الصورة";
-    setAdShareStatus("يمكنك فتح واتساب من الزر الأخضر وإرسال رقم الإعلان.", { error: true });
-  }
-}
-
-async function shareAdImage() {
-  const asset = cachedAdShareAsset;
-  if (!asset || !ui.shareAdImage || ui.shareAdImage.disabled) return;
-
-  const nativeShare = canShareAdFile(asset.file);
-  const readyLabel = nativeShare ? "مشاركة صورة الإعلان" : "تنزيل صورة الإعلان";
-  ui.shareAdImage.disabled = true;
-  ui.shareAdImage.setAttribute("aria-busy", "true");
-  ui.shareAdImageLabel.textContent = nativeShare ? "جاري فتح المشاركة…" : "جاري تنزيل الصورة…";
-  setAdShareStatus("");
-
-  try {
-    if (nativeShare) {
-      await navigator.share({
-        files: [asset.file],
-        title: `إعلان قلعة رقم ${listingId} من بلقيس`,
-        text: whatsappInterestMessage(),
-      });
-      setAdShareStatus("تم تسليم صورة الإعلان للتطبيق الذي اخترته.", { success: true });
-      haptic("success");
-      return;
-    }
-
-    downloadAdShareAsset(asset);
-    setAdShareStatus("تم تنزيل الصورة. افتح واتساب من الزر الأخضر ثم أرفق الصورة للمحادثة.", { success: true });
-    haptic("success");
-  } catch (error) {
-    if (error?.name === "AbortError") {
-      setAdShareStatus("أُلغيت المشاركة ولم تُرسل الصورة.");
-      return;
-    }
-    try {
-      downloadAdShareAsset(asset);
-      setAdShareStatus("تعذّر فتح قائمة المشاركة؛ تم تنزيل الصورة لتُرفقها يدويًا على واتساب.", { success: true });
-    } catch {
-      setAdShareStatus("تعذّرت مشاركة الصورة. افتح واتساب وأرسل رقم الإعلان الموجود في الرسالة.", { error: true });
-      haptic("error");
-    }
-  } finally {
-    ui.shareAdImage.disabled = false;
-    ui.shareAdImage.removeAttribute("aria-busy");
-    ui.shareAdImageLabel.textContent = readyLabel;
-  }
 }
 
 function updateWhatsappContact() {
@@ -1111,10 +844,7 @@ async function initialize() {
     ui.loadingState.hidden = true;
     ui.saveAll.disabled = state.viewMode;
 
-    if (state.viewMode) {
-      prepareAdShare();
-      return;
-    }
+    if (state.viewMode) return;
     if (loadedFromAdvertisement) setStatus(`تم تحميل بيانات الإعلان ${listingId}.`);
     else if (state.selected.size || Object.values(normalizeForm(localDraft.form)).some(Boolean)) setStatus("تمت استعادة آخر مسودة محفوظة على هذا الجهاز.");
   } catch {
@@ -1153,8 +883,6 @@ ui.form.addEventListener("submit", event => {
 ui.dialogClose.addEventListener("click", closeDialog);
 ui.saveHero.addEventListener("click", saveCurrentHero);
 ui.removeHero.addEventListener("click", removeCurrentHero);
-ui.shareAdImage?.addEventListener("click", shareAdImage);
-
 document.addEventListener("keydown", event => {
   if (event.key === "Escape" && !ui.modal.hidden) closeDialog();
 });
