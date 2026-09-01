@@ -49,8 +49,38 @@ const FORM_KEYS = [
   "firing_power",
 ];
 
+const PUBLIC_FORM_KEYS = FORM_KEYS.filter(key => key !== "name" && key !== "phone");
+const PUBLIC_FORM_ALIASES = {
+  l: "castle_level",
+  b: "honor_badges",
+  s: "science_power",
+  c: "compensated_power",
+  z: "zeroed_power",
+  r: "reserve",
+  g: "golden_seal",
+  e: "blue_equipment",
+  u: "purple_equipment",
+  x: "additional_heroes",
+  q: "legion_capacity",
+  i: "firing_power",
+};
+const MAX_PUBLIC_VIEW_TOKEN_LENGTH = 12000;
+
 const query = new URLSearchParams(window.location.search);
-const rawListingId = (query.get("ad") || query.get("listing") || "").trim();
+const fragment = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+const rawPublicViewToken = (fragment.get("view") || query.get("view") || "").trim();
+const viewModeRequested = Boolean(rawPublicViewToken);
+let publicViewData = null;
+let publicViewError = "";
+if (viewModeRequested) {
+  try {
+    publicViewData = decodePublicViewPayload(rawPublicViewToken);
+  } catch {
+    publicViewError = "رابط عرض القلعة غير صالح أو غير مكتمل.";
+  }
+}
+
+const rawListingId = String(publicViewData?.ad || query.get("ad") || query.get("listing") || "").trim();
 const listingId = /^\d{1,12}$/.test(rawListingId) ? rawListingId : "";
 const rawDraftId = (query.get("draft") || "").trim();
 const draftId = /^[A-Za-z0-9_-]{0,64}$/.test(rawDraftId) ? rawDraftId : "";
@@ -63,12 +93,22 @@ const isTelegramContext = Boolean(telegram && telegram.platform && telegram.plat
 const ui = {
   form: document.getElementById("castleForm"),
   formFields: [...document.querySelectorAll("[data-form-key]")],
+  pageTitle: document.getElementById("pageTitle"),
   listingBadge: document.getElementById("listingBadge"),
+  welcomeEyebrow: document.getElementById("welcomeEyebrow"),
+  welcomeTitle: document.getElementById("welcomeTitle"),
+  welcomeText: document.getElementById("welcomeText"),
+  viewPrice: document.getElementById("viewPrice"),
+  viewPriceValue: document.getElementById("viewPriceValue"),
+  ownerTitle: document.getElementById("ownerTitle"),
+  ownerDescription: document.getElementById("ownerDescription"),
   categoryTitle: document.getElementById("categoryTitle"),
   selectedCount: document.getElementById("selectedCount"),
   heroCatalog: document.getElementById("heroCatalog"),
   loadingState: document.getElementById("loadingState"),
   categoryNav: document.getElementById("categoryNav"),
+  heroesDescription: document.getElementById("heroesDescription"),
+  editorHint: document.getElementById("editorHint"),
   saveAll: document.getElementById("saveAll"),
   saveCount: document.getElementById("saveCount"),
   saveStatus: document.getElementById("saveStatus"),
@@ -98,6 +138,7 @@ const state = {
   draft: { yellow: 5, red: 0 },
   dirty: false,
   returnFocus: null,
+  viewMode: viewModeRequested,
 };
 
 function escapeHtml(value) {
@@ -126,6 +167,76 @@ function validMoonState(values) {
     && values.yellow <= 5
     && values.red <= 5
     && values.yellow + values.red <= 5;
+}
+
+function decodeBase64Url(token) {
+  if (!token || token.length > MAX_PUBLIC_VIEW_TOKEN_LENGTH || !/^[A-Za-z0-9_-]+$/.test(token)) {
+    throw new Error("invalid-view-token");
+  }
+  const padded = token.replaceAll("-", "+").replaceAll("_", "/")
+    + "=".repeat((4 - (token.length % 4)) % 4);
+  const binary = window.atob(padded);
+  const bytes = Uint8Array.from(binary, character => character.charCodeAt(0));
+  if (typeof TextDecoder === "function") return new TextDecoder().decode(bytes);
+  const encodedBytes = [...bytes].map(byte => `%${byte.toString(16).padStart(2, "0")}`).join("");
+  return decodeURIComponent(encodedBytes);
+}
+
+function normalizePublicForm(rawForm) {
+  if (!rawForm || typeof rawForm !== "object" || Array.isArray(rawForm)) {
+    throw new Error("invalid-public-form");
+  }
+  const expanded = {};
+  for (const key of PUBLIC_FORM_KEYS) {
+    if (rawForm[key] !== undefined) expanded[key] = rawForm[key];
+  }
+  for (const [alias, key] of Object.entries(PUBLIC_FORM_ALIASES)) {
+    if (expanded[key] === undefined && rawForm[alias] !== undefined) expanded[key] = rawForm[alias];
+  }
+  return Object.fromEntries(
+    PUBLIC_FORM_KEYS.map(key => [key, String(expanded[key] ?? "").slice(0, 500)])
+  );
+}
+
+function decodePublicViewPayload(token) {
+  const raw = JSON.parse(decodeBase64Url(token));
+  if (!raw || typeof raw !== "object" || Array.isArray(raw) || Number(raw.v) !== 1) {
+    throw new Error("invalid-public-payload");
+  }
+
+  const ad = String(raw.ad ?? raw.a ?? "").trim();
+  if (!/^\d{1,12}$/.test(ad)) throw new Error("invalid-public-ad");
+
+  const numericPrice = Number(raw.price ?? raw.p);
+  if (!Number.isFinite(numericPrice) || numericPrice <= 0) throw new Error("invalid-public-price");
+
+  const rawHeroes = raw.heroes ?? raw.h;
+  if (!Array.isArray(rawHeroes) || rawHeroes.length > HERO_DISPLAY.length) {
+    throw new Error("invalid-public-heroes");
+  }
+  const allowedHeroIds = new Set(HERO_DISPLAY.map(hero => hero.id));
+  const seenHeroIds = new Set();
+  const heroes = rawHeroes.map(item => {
+    const id = Number(Array.isArray(item) ? item[0] : item?.id ?? item?.heroId);
+    const yellow = Number(Array.isArray(item) ? item[1] : item?.yellow ?? item?.y);
+    const red = Number(Array.isArray(item) ? item[2] : item?.red ?? item?.r);
+    if (!allowedHeroIds.has(id) || seenHeroIds.has(id) || !validMoonState({ yellow, red })) {
+      throw new Error("invalid-public-hero");
+    }
+    seenHeroIds.add(id);
+    return [id, yellow, red];
+  });
+
+  return {
+    ad,
+    price: numericPrice,
+    form: normalizePublicForm(raw.form ?? raw.f),
+    heroes,
+  };
+}
+
+function formatPublicPrice(value) {
+  return new Intl.NumberFormat("ar-EG", { maximumFractionDigits: 2 }).format(value);
 }
 
 function normalizeSelection(items) {
@@ -181,8 +292,16 @@ function applyForm(form) {
 }
 
 function renderCategories() {
-  ui.categoryNav.innerHTML = state.categories.map(category => {
-    const count = state.heroes.filter(hero => hero.category === category.id).length;
+  const visibleCategories = state.viewMode
+    ? state.categories.filter(category => state.heroes.some(
+      hero => hero.category === category.id && state.selected.has(hero.id)
+    ))
+    : state.categories;
+  ui.categoryNav.hidden = visibleCategories.length === 0;
+  ui.categoryNav.innerHTML = visibleCategories.map(category => {
+    const count = state.heroes.filter(hero => (
+      hero.category === category.id && (!state.viewMode || state.selected.has(hero.id))
+    )).length;
     return `
       <button class="category-button" type="button" data-category="${escapeHtml(category.id)}" aria-pressed="${category.id === state.category}">
         <img src="${escapeHtml(category.icon)}" alt="" width="80" height="54">
@@ -195,16 +314,33 @@ function renderCategories() {
 
 function renderCatalog() {
   const category = state.categoryById.get(state.category);
-  if (!category) return;
-  ui.categoryTitle.textContent = category.label;
+  const categoryHeroes = category
+    ? state.heroes.filter(hero => (
+      hero.category === state.category && (!state.viewMode || state.selected.has(hero.id))
+    ))
+    : [];
+  ui.categoryTitle.textContent = category?.label || "لا توجد فئة";
   ui.selectedCount.textContent = selectedLabel(state.selected.size);
   ui.saveCount.textContent = selectedLabel(state.selected.size);
 
-  ui.heroCatalog.innerHTML = state.heroes
-    .filter(hero => hero.category === state.category)
+  if (state.viewMode && categoryHeroes.length === 0) {
+    ui.heroCatalog.innerHTML = '<div class="empty-heroes" role="status">لم تُحدّد أبطال لهذا الإعلان.</div>';
+    return;
+  }
+
+  ui.heroCatalog.innerHTML = categoryHeroes
     .map(hero => {
       const values = state.selected.get(hero.id);
       const actionLabel = values ? `${hero.name}، تم اختياره، ${moonSummary(values)}` : `${hero.name}، اضغط للإضافة`;
+      if (state.viewMode) {
+        return `
+          <article class="catalog-hero is-selected is-readonly" aria-label="${escapeHtml(actionLabel)}">
+            <img src="${heroImage(hero, values)}" alt="صورة ${escapeHtml(hero.name)}" width="150" height="150" loading="lazy">
+            <span class="catalog-name">${escapeHtml(hero.name)}</span>
+            <span class="catalog-state" aria-label="${escapeHtml(moonSummary(values))}">${moonMarkup(values)}</span>
+          </article>
+        `;
+      }
       return `
         <button class="catalog-hero${values ? " is-selected" : ""}" type="button" data-hero-id="${hero.id}" aria-label="${escapeHtml(actionLabel)}">
           ${values ? '<span class="selected-mark" aria-hidden="true">✓</span>' : ""}
@@ -252,6 +388,39 @@ function setupTelegram() {
   }
 }
 
+function setupPublicView() {
+  document.body.classList.add("view-mode");
+  document.title = `بلقيس | عرض القلعة ${publicViewData?.ad || ""}`.trim();
+  ui.pageTitle.textContent = "عرض القلعة";
+  ui.welcomeEyebrow.textContent = "عرض من بلقيس";
+  ui.welcomeTitle.textContent = "تفاصيل القلعة والأبطال المختارين";
+  ui.welcomeText.textContent = "هذه نسخة للعرض فقط. البيانات لا يمكن تعديلها من هذه الصفحة.";
+  ui.ownerTitle.textContent = "بيانات القلعة";
+  ui.ownerDescription.textContent = "المواصفات العامة المعتمدة في الإعلان";
+  ui.heroesDescription.textContent = "الأبطال المختارون وحالة الأهلة لكل بطل";
+  ui.editorHint.textContent = "تنقّل بين الفئات لمشاهدة الأبطال المختارين. تظهر صورة الاستيقاظ عند وجود أهلة حمراء.";
+  ui.viewPrice.hidden = !publicViewData;
+  ui.viewPriceValue.textContent = publicViewData ? formatPublicPrice(publicViewData.price) : "";
+  ui.listingBadge.textContent = publicViewData ? `الإعلان ${publicViewData.ad}` : "رابط غير صالح";
+  ui.form.setAttribute("aria-label", "تفاصيل إعلان القلعة للعرض فقط");
+  ui.modal.hidden = true;
+  ui.saveAll.disabled = true;
+
+  for (const privateField of document.querySelectorAll(".owner-private-field")) {
+    privateField.hidden = true;
+    privateField.setAttribute("aria-hidden", "true");
+  }
+  document.querySelector(".submit-card")?.setAttribute("hidden", "");
+
+  for (const field of ui.formFields) {
+    field.required = false;
+    field.tabIndex = -1;
+    field.setAttribute("aria-readonly", "true");
+    if (field instanceof HTMLSelectElement) field.disabled = true;
+    else field.readOnly = true;
+  }
+}
+
 function haptic(kind = "selection") {
   if (!isTelegramContext) return;
   try {
@@ -270,11 +439,13 @@ function setStatus(message, { error = false, success = false } = {}) {
 }
 
 function markDirty(message = "يوجد تغييرات لم تُحفظ بعد.") {
+  if (state.viewMode) return;
   state.dirty = true;
   setStatus(message);
 }
 
 function openHero(heroId, trigger) {
+  if (state.viewMode) return;
   const hero = state.heroById.get(heroId);
   if (!hero) return;
   state.editingId = heroId;
@@ -296,6 +467,7 @@ function closeDialog() {
 }
 
 function chooseMoonValue(color, value) {
+  if (state.viewMode) return;
   const other = color === "yellow" ? "red" : "yellow";
   state.draft[color] = value;
   if (state.draft[color] + state.draft[other] > 5) state.draft[other] = 5 - value;
@@ -304,6 +476,7 @@ function chooseMoonValue(color, value) {
 }
 
 function saveCurrentHero() {
+  if (state.viewMode) return;
   if (!state.heroById.has(state.editingId) || !validMoonState(state.draft)) return;
   state.selected.set(state.editingId, { ...state.draft });
   renderCatalog();
@@ -313,6 +486,7 @@ function saveCurrentHero() {
 }
 
 function removeCurrentHero() {
+  if (state.viewMode) return;
   if (!state.heroById.has(state.editingId)) return;
   state.selected.delete(state.editingId);
   renderCatalog();
@@ -353,7 +527,7 @@ function buildPayload(heroes, form) {
 }
 
 async function loadAdvertisementData() {
-  if (!listingId || isTelegramContext || window.location.protocol === "file:") return false;
+  if (state.viewMode || !listingId || isTelegramContext || window.location.protocol === "file:") return false;
   try {
     const response = await window.fetch(`/api/ads/${encodeURIComponent(listingId)}/heroes`, {
       headers: { Accept: "application/json" },
@@ -370,7 +544,7 @@ async function loadAdvertisementData() {
 }
 
 async function saveThroughApi(payload) {
-  if (!listingId || window.location.protocol === "file:") return { ok: false, reason: "draft" };
+  if (state.viewMode || !listingId || window.location.protocol === "file:") return { ok: false, reason: "draft" };
   try {
     const response = await window.fetch(`/api/ads/${encodeURIComponent(listingId)}/heroes`, {
       method: "PUT",
@@ -386,7 +560,7 @@ async function saveThroughApi(payload) {
 }
 
 function sendThroughTelegram(payload) {
-  if (!isTelegramContext || typeof telegram?.sendData !== "function") return false;
+  if (state.viewMode || !isTelegramContext || typeof telegram?.sendData !== "function") return false;
   const encoded = JSON.stringify(payload);
   if (new Blob([encoded]).size > TELEGRAM_PAYLOAD_LIMIT) throw new Error("telegram-payload-too-large");
   telegram.sendData(encoded);
@@ -404,6 +578,7 @@ function validateForm() {
 }
 
 async function saveAllData() {
+  if (state.viewMode) return;
   if (!validateForm()) return;
   const heroes = compactSelection();
   const form = collectForm();
@@ -447,14 +622,29 @@ async function saveAllData() {
 }
 
 function showLoadError() {
-  ui.loadingState.replaceWith(ui.errorTemplate.content.cloneNode(true));
-  setStatus("تعذّر تحميل صور الأبطال.", { error: true });
+  const errorState = ui.errorTemplate.content.cloneNode(true);
+  if (state.viewMode) {
+    errorState.querySelector("strong").textContent = "تعذّر تحميل عرض القلعة";
+    errorState.querySelector("span").textContent = publicViewError || "أعد فتح رابط الإعلان من بوت بلقيس.";
+  }
+  ui.loadingState.replaceWith(errorState);
+  if (!state.viewMode) setStatus("تعذّر تحميل صور الأبطال.", { error: true });
 }
 
 async function initialize() {
   setupTelegram();
-  ui.listingBadge.textContent = listingId ? `الإعلان ${listingId}` : "وضع المعاينة";
-  if (rawListingId && !listingId) setStatus("رقم الإعلان في الرابط غير صالح؛ سيُستخدم وضع المسودة.", { error: true });
+  if (state.viewMode) {
+    setupPublicView();
+    if (!publicViewData) {
+      document.querySelectorAll(".form-section:not(.heroes-section)").forEach(section => { section.hidden = true; });
+      ui.categoryNav.hidden = true;
+      showLoadError();
+      return;
+    }
+  } else {
+    ui.listingBadge.textContent = listingId ? `الإعلان ${listingId}` : "وضع المعاينة";
+    if (rawListingId && !listingId) setStatus("رقم الإعلان في الرابط غير صالح؛ سيُستخدم وضع المسودة.", { error: true });
+  }
 
   try {
     const response = await window.fetch(CATALOG_URL, { cache: "no-store" });
@@ -473,15 +663,26 @@ async function initialize() {
     });
     state.heroById = new Map(state.heroes.map(hero => [hero.id, hero]));
 
-    const localDraft = readLocalDraft();
-    state.selected = normalizeSelection(localDraft.heroes);
-    applyForm(localDraft.form);
-    const loadedFromAdvertisement = await loadAdvertisementData();
+    let loadedFromAdvertisement = false;
+    let localDraft = { heroes: [], form: {} };
+    if (state.viewMode) {
+      state.selected = normalizeSelection(publicViewData.heroes);
+      if (state.selected.size !== publicViewData.heroes.length) throw new Error("invalid-public-selection");
+      applyForm(publicViewData.form);
+      const firstSelectedHero = state.heroes.find(hero => state.selected.has(hero.id));
+      if (firstSelectedHero) state.category = firstSelectedHero.category;
+    } else {
+      localDraft = readLocalDraft();
+      state.selected = normalizeSelection(localDraft.heroes);
+      applyForm(localDraft.form);
+      loadedFromAdvertisement = await loadAdvertisementData();
+    }
     renderCategories();
     renderCatalog();
     ui.loadingState.hidden = true;
-    ui.saveAll.disabled = false;
+    ui.saveAll.disabled = state.viewMode;
 
+    if (state.viewMode) return;
     if (loadedFromAdvertisement) setStatus(`تم تحميل بيانات الإعلان ${listingId}.`);
     else if (state.selected.size || Object.values(normalizeForm(localDraft.form)).some(Boolean)) setStatus("تمت استعادة آخر مسودة محفوظة على هذا الجهاز.");
   } catch {
@@ -505,6 +706,7 @@ ui.heroCatalog.addEventListener("click", event => {
 });
 
 ui.modal.addEventListener("click", event => {
+  if (state.viewMode) return;
   if (event.target === ui.modal) closeDialog();
   const button = event.target.closest("[data-moon-color]");
   if (button) chooseMoonValue(button.dataset.moonColor, Number(button.dataset.value));
