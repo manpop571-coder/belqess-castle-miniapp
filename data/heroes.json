@@ -1,0 +1,97 @@
+{
+  "version": 1,
+  "categories": [
+    {
+      "id": "infantry",
+      "label": "المشاة",
+      "icon": "assets/game/categories/hero_skill_icon_bubing.png"
+    },
+    {
+      "id": "cavalry",
+      "label": "الفرسان",
+      "icon": "assets/game/categories/hero_skill_icon_qingbing.png"
+    },
+    {
+      "id": "ranged",
+      "label": "الرماة",
+      "icon": "assets/game/categories/hero_skill_icon_gongbing.png"
+    },
+    {
+      "id": "siege",
+      "label": "العجلات",
+      "icon": "assets/game/categories/hero_skill_icon_qixie.png"
+    }
+  ],
+  "heroes": [
+    { "id": 1, "name": "شجاع", "category": "infantry", "wake": false },
+    { "id": 2, "name": "الكاهنة", "category": "infantry", "wake": false },
+    { "id": 3, "name": "بيبرس", "category": "infantry", "wake": true },
+    { "id": 4, "name": "بلقيس", "category": "infantry", "wake": false },
+    { "id": 5, "name": "بن مرشد", "category": "infantry", "wake": false },
+    { "id": 26, "name": "أرسلان", "category": "infantry", "wake": true },
+    { "id": 32, "name": "ديبونيجورو", "category": "infantry", "wake": true },
+    { "id": 33, "name": "قلاوون", "category": "infantry", "wake": true },
+    { "id": 35, "name": "القعقاع", "category": "infantry", "wake": true },
+    { "id": 39, "name": "بوشكين", "category": "infantry", "wake": true },
+    { "id": 44, "name": "محمد الثاني", "category": "infantry", "wake": true },
+    { "id": 47, "name": "أرطغرل", "category": "infantry", "wake": true },
+    { "id": 55, "name": "عمر المختار", "category": "infantry", "wake": true },
+    { "id": 60, "name": "زينب", "category": "infantry", "wake": false },
+    { "id": 64, "name": "ماوية", "category": "infantry", "wake": false },
+
+    { "id": 6, "name": "جسّاس", "category": "cavalry", "wake": true },
+    { "id": 7, "name": "سعود", "category": "cavalry", "wake": false },
+    { "id": 8, "name": "المظفر", "category": "cavalry", "wake": true },
+    { "id": 9, "name": "السلطان سليم", "category": "cavalry", "wake": false },
+    { "id": 10, "name": "صباح", "category": "cavalry", "wake": true },
+    { "id": 11, "name": "الطارق", "category": "cavalry", "wake": true },
+    { "id": 12, "name": "السلطانة مريم", "category": "cavalry", "wake": false },
+    { "id": 30, "name": "سني علي", "category": "cavalry", "wake": true },
+    { "id": 37, "name": "بايزيد الأول", "category": "cavalry", "wake": true },
+    { "id": 42, "name": "عبدالرحمن", "category": "cavalry", "wake": true },
+    { "id": 45, "name": "حاتم الطائي", "category": "cavalry", "wake": true },
+    { "id": 48, "name": "هارون الرشيد", "category": "cavalry", "wake": true },
+    { "id": 51, "name": "بوراك", "category": "cavalry", "wake": true },
+    { "id": 54, "name": "الإسكندر الأكبر", "category": "cavalry", "wake": true },
+    { "id": 59, "name": "بارون", "category": "cavalry", "wake": false },
+    { "id": 63, "name": "جوهر الصقلي", "category": "cavalry", "wake": false },
+
+    { "id": 13, "name": "سيّد الكنوز", "category": "ranged", "wake": true },
+    { "id": 14, "name": "المارد", "category": "ranged", "wake": false },
+    { "id": 15, "name": "أضحى", "category": "ranged", "wake": true },
+    { "id": 16, "name": "شجرة الدر", "category": "ranged", "wake": false },
+    { "id": 17, "name": "مراد الريّس", "category": "ranged", "wake": true },
+    { "id": 18, "name": "السلطانة هيام", "category": "ranged", "wake": true },
+    { "id": 19, "name": "العجوز القاتل", "category": "ranged", "wake": false },
+    { "id": 31, "name": "أبوليلى المهلهل", "category": "ranged", "wake": true },
+    { "id": 38, "name": "امرؤ القيس", "category": "ranged", "wake": true },
+    { "id": 43, "name": "كوسم", "category": "ranged", "wake": true },
+    { "id": 46, "name": "عمرو بن كلثوم", "category": "ranged", "wake": true },
+    { "id": 49, "name": "حليمة خاتون", "category": "ranged", "wake": true },
+    { "id": 52, "name": "زرقاء اليمامة", "category": "ranged", "wake": true },
+    { "id": 57, "name": "خير الدين بربروس", "category": "ranged", "wake": true },
+    { "id": 61, "name": "أتيلا الهوني", "category": "ranged", "wake": false },
+    { "id": 65, "name": "قايتباي", "category": "ranged", "wake": false },
+    { "id": 69, "name": "أورخان غازي", "category": "ranged", "wake": false },
+
+    { "id": 20, "name": "قادر", "category": "siege", "wake": false },
+    { "id": 21, "name": "بن تاشفين", "category": "siege", "wake": false },
+    { "id": 22, "name": "سليمان", "category": "siege", "wake": true },
+    { "id": 23, "name": "همام", "category": "siege", "wake": false },
+    { "id": 24, "name": "صابرين", "category": "siege", "wake": false },
+    { "id": 27, "name": "المنصور", "category": "siege", "wake": true },
+    { "id": 28, "name": "عنترة", "category": "siege", "wake": true },
+    { "id": 29, "name": "عثمان", "category": "siege", "wake": true },
+    { "id": 34, "name": "فاطمة الفهري", "category": "siege", "wake": true },
+    { "id": 36, "name": "زنوبيا", "category": "siege", "wake": true },
+    { "id": 40, "name": "الخنساء", "category": "siege", "wake": true },
+    { "id": 41, "name": "صلاح الدين", "category": "siege", "wake": true },
+    { "id": 50, "name": "زبيدة بنت جعفر", "category": "siege", "wake": true },
+    { "id": 53, "name": "مالك بن الريب", "category": "siege", "wake": true },
+    { "id": 56, "name": "قطز", "category": "siege", "wake": true },
+    { "id": 58, "name": "سيلين", "category": "siege", "wake": false },
+    { "id": 62, "name": "كافور الإخشيدي", "category": "siege", "wake": false },
+    { "id": 66, "name": "برقوق", "category": "siege", "wake": false },
+    { "id": 70, "name": "نفرتيتي", "category": "siege", "wake": false }
+  ]
+}

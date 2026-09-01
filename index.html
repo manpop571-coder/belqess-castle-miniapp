@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#041f27">
+  <title>بلقيس | اختيار أبطال القلعة</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main class="editor-shell" id="heroEditor">
+    <header class="editor-header">
+      <div class="brand-mark" aria-hidden="true"><span>ب</span></div>
+      <div class="brand-copy">
+        <p>بلقيس لبيع القلاع</p>
+        <h1>أبطال القلعة</h1>
+      </div>
+      <span class="listing-badge" id="listingBadge">معاينة</span>
+    </header>
+
+    <section class="editor-summary" aria-label="حالة اختيار الأبطال">
+      <div>
+        <span class="summary-label">الفئة الحالية</span>
+        <strong id="categoryTitle">المشاة</strong>
+      </div>
+      <div class="summary-count">
+        <span class="summary-label">تم اختيار</span>
+        <strong id="selectedCount">0 أبطال</strong>
+      </div>
+    </section>
+
+    <p class="editor-hint">
+      اضغط على صورة البطل وحدّد الأهلة. إجمالي الأصفر والأحمر لا يتجاوز 5.
+    </p>
+
+    <section
+      class="hero-catalog"
+      id="heroCatalog"
+      aria-live="polite"
+      aria-label="قائمة الأبطال"
+    ></section>
+
+    <div class="loading-state" id="loadingState" role="status">جاري تحميل أبطال القلعة…</div>
+
+    <footer class="editor-dock">
+      <button class="save-all" id="saveAll" type="button" disabled>
+        <span>حفظ جميع الأبطال</span>
+        <small id="saveCount">0</small>
+      </button>
+      <span class="save-status" id="saveStatus" aria-live="polite"></span>
+      <nav class="category-nav" id="categoryNav" aria-label="فئات الأبطال"></nav>
+    </footer>
+  </main>
+
+  <div class="modal-layer" id="heroModal" hidden>
+    <section
+      class="hero-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="dialogHeroName"
+    >
+      <button class="dialog-close" id="dialogClose" type="button" aria-label="إغلاق">×</button>
+
+      <div class="dialog-hero">
+        <div class="dialog-portrait">
+          <img id="dialogHeroImage" alt="">
+          <span class="wake-badge" id="wakeBadge" hidden>صورة الاستيقاظ</span>
+        </div>
+        <div>
+          <span id="dialogCategory"></span>
+          <h2 id="dialogHeroName"></h2>
+          <div class="dialog-moons" id="dialogMoons" aria-live="polite"></div>
+        </div>
+      </div>
+
+      <fieldset class="moon-fieldset yellow-fieldset">
+        <legend>عدد الأهلة الصفراء</legend>
+        <div class="number-options" id="yellowOptions"></div>
+      </fieldset>
+
+      <fieldset class="moon-fieldset red-fieldset">
+        <legend>عدد الأهلة الحمراء</legend>
+        <div class="number-options" id="redOptions"></div>
+      </fieldset>
+
+      <p class="moon-note" id="moonNote">إجمالي الأهلة: <strong>5 من 5</strong></p>
+
+      <div class="dialog-actions">
+        <button class="remove-hero" id="removeHero" type="button">إزالة البطل</button>
+        <button class="save-hero" id="saveHero" type="button">حفظ البطل</button>
+      </div>
+    </section>
+  </div>
+
+  <template id="errorTemplate">
+    <div class="error-state" role="alert">
+      <strong>تعذّر تحميل محرر الأبطال</strong>
+      <span>أعد فتح الصفحة أو جرّب مرة أخرى.</span>
+    </div>
+  </template>
+</body>
+</html>
