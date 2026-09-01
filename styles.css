@@ -215,36 +215,112 @@ textarea:focus-visible {
 .merchant-taglines p span { color: var(--teal); padding-inline: 2px; }
 
 .merchant-contact {
-  width: min(100%, 405px);
-  display: inline-flex;
+  position: relative;
+  isolation: isolate;
+  width: min(100%, 440px);
+  min-height: 72px;
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) 39px;
   direction: rtl;
   align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 7px 10px;
-  padding: 11px 17px;
-  color: #fff7dc;
-  background: linear-gradient(135deg, #095748, #052e31);
-  border: 1px solid rgba(37, 211, 102, .9);
-  border-radius: 15px;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, .3), inset 0 1px rgba(255, 255, 255, .14);
-  font-size: clamp(13px, 3.55vw, 17px);
-  font-weight: 900;
+  gap: 11px;
+  padding: 10px 13px;
+  overflow: hidden;
+  color: #042b18;
+  background: linear-gradient(135deg, #42dc79, #25d366 56%, #18b952);
+  border: 2px solid #8af0ae;
+  border-radius: 18px;
+  box-shadow: 0 6px 0 #087838, 0 13px 28px rgba(0, 0, 0, .36), inset 0 1px rgba(255, 255, 255, .45);
+  cursor: pointer;
   text-decoration: none;
-  transition: transform .16s ease, filter .16s ease;
+  text-align: right;
+  transition: transform .16s ease, filter .16s ease, box-shadow .16s ease;
 }
 
-.merchant-contact:hover { filter: brightness(1.12); transform: translateY(-1px); }
-.whatsapp-icon { width: 28px; height: 28px; flex: 0 0 auto; }
-.whatsapp-bubble { fill: #25d366; }
-.whatsapp-receiver { fill: #fff; transform: scale(.82); transform-origin: center; }
+.merchant-contact::before {
+  position: absolute;
+  z-index: -1;
+  top: -46px;
+  left: -20px;
+  width: 150px;
+  height: 100px;
+  content: "";
+  background: rgba(255, 255, 255, .18);
+  border-radius: 50%;
+  transform: rotate(-18deg);
+}
 
-.merchant-contact bdi {
+.merchant-contact:hover { filter: brightness(1.06); transform: translateY(-2px); }
+
+.merchant-contact:active {
+  box-shadow: 0 2px 0 #087838, 0 7px 16px rgba(0, 0, 0, .32), inset 0 1px rgba(255, 255, 255, .35);
+  transform: translateY(4px);
+}
+
+.merchant-contact:focus-visible {
+  outline: 3px solid #fff1b7;
+  outline-offset: 4px;
+}
+
+.whatsapp-icon-frame {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  background: rgba(3, 87, 41, .9);
+  border: 1px solid rgba(255, 255, 255, .48);
+  border-radius: 15px;
+  box-shadow: inset 0 1px rgba(255, 255, 255, .18), 0 4px 10px rgba(3, 78, 36, .25);
+}
+
+.whatsapp-icon { width: 32px; height: 32px; display: block; }
+.whatsapp-bubble { fill: #fff; }
+.whatsapp-receiver { fill: #15934a; transform: scale(.82); transform-origin: center; }
+
+.merchant-contact-copy {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+  line-height: 1.3;
+}
+
+.merchant-contact-copy strong {
+  color: #042817;
+  font-size: clamp(13px, 3.6vw, 17px);
+  font-weight: 900;
+}
+
+.merchant-contact-copy small {
+  overflow: hidden;
+  color: #07522a;
+  font-size: clamp(9px, 2.55vw, 12px);
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.merchant-contact-copy bdi {
   direction: ltr;
+  justify-self: start;
+  color: #063b21;
   font-family: Arial, sans-serif;
-  font-size: 1.08em;
+  font-size: 10px;
+  font-weight: 800;
   letter-spacing: .04em;
   white-space: nowrap;
+}
+
+.merchant-contact-arrow {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: #075d30;
+  border: 1px solid rgba(255, 255, 255, .55);
+  border-radius: 50%;
+  box-shadow: 0 3px 8px rgba(3, 72, 34, .28);
+  font: 900 21px/1 Arial, sans-serif;
 }
 
 .welcome-card {
@@ -749,8 +825,12 @@ textarea:focus-visible {
   .identity-name { width: 72%; margin-top: -29%; }
   .merchant-copy { gap: 9px; }
   .merchant-taglines { padding-inline: 7px; }
-  .merchant-contact { gap: 6px 8px; padding: 10px 9px; }
-  .merchant-contact > span { display: none; }
+  .merchant-contact { grid-template-columns: 46px minmax(0, 1fr) 32px; gap: 8px; padding: 9px 8px; }
+  .whatsapp-icon-frame { width: 46px; height: 46px; border-radius: 13px; }
+  .whatsapp-icon { width: 29px; height: 29px; }
+  .merchant-contact-arrow { width: 31px; height: 31px; font-size: 18px; }
+  .merchant-contact-copy strong { font-size: 12px; }
+  .merchant-contact-copy small { font-size: 8px; }
   .listing-badge { grid-column: 2; margin-top: -8px; }
   .form-section { padding-inline: 10px; }
   .hero-catalog { grid-template-columns: repeat(2, minmax(0, 1fr)); }

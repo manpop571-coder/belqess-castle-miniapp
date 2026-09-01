@@ -6,9 +6,9 @@
   <meta name="theme-color" content="#051b24">
   <title>بلقيس | بيانات عرض القلعة</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="styles.css?v=20260901-10">
+  <link rel="stylesheet" href="styles.css?v=20260901-11">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script src="app.js?v=20260901-10" defer></script>
+  <script src="app.js?v=20260901-11" defer></script>
 </head>
 <body>
   <main class="editor-shell" id="heroEditor">
@@ -32,13 +32,19 @@
           <p>خبرة أكثر من 6 سنوات <span aria-hidden="true">•</span> أسعار اقتصادية</p>
           <p>سهولة <span aria-hidden="true">•</span> سرعة <span aria-hidden="true">•</span> ثقة <span aria-hidden="true">•</span> أمانة في التعامل</p>
         </div>
-        <a class="merchant-contact" href="https://wa.me/201020774509" target="_blank" rel="noopener noreferrer" aria-label="راسل بلقيس على واتساب عبر رقم موجب عشرين 1020774509">
-          <svg class="whatsapp-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path class="whatsapp-bubble" d="M12 1.5a10.5 10.5 0 0 0-9 15.9L1.7 22l4.7-1.2A10.5 10.5 0 1 0 12 1.5z"></path>
-            <path class="whatsapp-receiver" d="M8.1 5.4c.4-.2.9 0 1.1.4l1.2 2.8c.2.4.1.8-.2 1.1l-1 1c.9 1.8 2.3 3.2 4.1 4.1l1-1c.3-.3.8-.4 1.1-.2l2.8 1.2c.4.2.6.7.4 1.1l-.6 2c-.1.4-.5.7-.9.7-7.1 0-12.9-5.8-12.9-12.9 0-.4.3-.8.7-.9z"></path>
-          </svg>
-          <span>راسلنا على واتساب</span>
-          <bdi dir="ltr">+201020774509</bdi>
+        <a class="merchant-contact" id="whatsappContact" href="https://wa.me/201020774509" target="_blank" rel="noopener noreferrer" aria-label="اضغط للتواصل مع بلقيس على واتساب عبر رقم موجب عشرين 1020774509">
+          <span class="whatsapp-icon-frame" aria-hidden="true">
+            <svg class="whatsapp-icon" viewBox="0 0 24 24">
+              <path class="whatsapp-bubble" d="M12 1.5a10.5 10.5 0 0 0-9 15.9L1.7 22l4.7-1.2A10.5 10.5 0 1 0 12 1.5z"></path>
+              <path class="whatsapp-receiver" d="M8.1 5.4c.4-.2.9 0 1.1.4l1.2 2.8c.2.4.1.8-.2 1.1l-1 1c.9 1.8 2.3 3.2 4.1 4.1l1-1c.3-.3.8-.4 1.1-.2l2.8 1.2c.4.2.6.7.4 1.1l-.6 2c-.1.4-.5.7-.9.7-7.1 0-12.9-5.8-12.9-12.9 0-.4.3-.8.7-.9z"></path>
+            </svg>
+          </span>
+          <span class="merchant-contact-copy">
+            <strong>اضغط هنا للتواصل عبر واتساب</strong>
+            <small id="whatsappContactHint">افتح محادثة مباشرة مع بلقيس</small>
+            <bdi dir="ltr">+201020774509</bdi>
+          </span>
+          <span class="merchant-contact-arrow" aria-hidden="true">←</span>
         </a>
       </div>
     </section>

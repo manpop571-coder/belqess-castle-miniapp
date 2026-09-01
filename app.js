@@ -2,6 +2,7 @@ const CATALOG_URL = "data/heroes.json";
 const HERO_ROOT = "assets/game/heroes/";
 const WAKE_ROOT = "assets/game/wake/";
 const TELEGRAM_PAYLOAD_LIMIT = 4096;
+const WHATSAPP_PHONE = "201020774509";
 
 const HERO_DISPLAY = [
   { id: 55, name: "مختار", category: "infantry" },
@@ -125,6 +126,8 @@ const ui = {
   formFields: [...document.querySelectorAll("[data-form-key]")],
   pageTitle: document.getElementById("pageTitle"),
   listingBadge: document.getElementById("listingBadge"),
+  whatsappContact: document.getElementById("whatsappContact"),
+  whatsappContactHint: document.getElementById("whatsappContactHint"),
   welcomeEyebrow: document.getElementById("welcomeEyebrow"),
   welcomeTitle: document.getElementById("welcomeTitle"),
   welcomeText: document.getElementById("welcomeText"),
@@ -518,6 +521,25 @@ function setupTelegram() {
   }
 }
 
+function updateWhatsappContact() {
+  if (!ui.whatsappContact) return;
+  const message = listingId
+    ? `مرحبًا يا بلقيس، أنا مهتم بالإعلان رقم ${listingId}`
+    : "مرحبًا يا بلقيس، أنا مهتم بأحد إعلاناتك";
+  ui.whatsappContact.href = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(message)}`;
+  ui.whatsappContact.setAttribute(
+    "aria-label",
+    listingId
+      ? `اضغط للتواصل مع بلقيس على واتساب بخصوص الإعلان رقم ${listingId}`
+      : "اضغط للتواصل مع بلقيس على واتساب"
+  );
+  if (ui.whatsappContactHint) {
+    ui.whatsappContactHint.textContent = listingId
+      ? `محادثة مباشرة عن الإعلان رقم ${listingId}`
+      : "افتح محادثة مباشرة مع بلقيس";
+  }
+}
+
 function setupPublicView() {
   document.body.classList.add("view-mode");
   document.title = `بلقيس | عرض القلعة ${publicViewData?.ad || ""}`.trim();
@@ -767,6 +789,7 @@ function showLoadError() {
 
 async function initialize() {
   setupTelegram();
+  updateWhatsappContact();
   if (state.viewMode) {
     setupPublicView();
     if (!publicViewData) {
