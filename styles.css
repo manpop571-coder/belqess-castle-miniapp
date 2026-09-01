@@ -146,117 +146,42 @@ textarea:focus-visible {
 .view-mode .editor-header { display: none; }
 
 .view-mode .merchant-profile {
-  position: relative;
-  isolation: isolate;
   direction: rtl;
   display: block;
-  margin: 0 0 12px;
-  padding: 12px 6px 4px;
+  margin: 0 0 16px;
+  padding: 3px 0 0;
   text-align: center;
 }
 
-.view-mode .merchant-profile::before {
-  position: absolute;
-  z-index: -1;
-  top: 18px;
-  right: 0;
-  left: 0;
-  height: 135px;
-  content: "";
-  background:
-    linear-gradient(90deg, transparent 0 5%, rgba(242, 198, 92, .28) 5% 5.4%, transparent 5.4% 94.6%, rgba(242, 198, 92, .28) 94.6% 95%, transparent 95%),
-    linear-gradient(90deg, transparent, rgba(27, 113, 110, .52), transparent);
-  clip-path: polygon(0 100%, 0 30%, 5% 30%, 5% 14%, 12% 14%, 12% 30%, 20% 30%, 20% 0, 27% 0, 27% 30%, 73% 30%, 73% 0, 80% 0, 80% 30%, 88% 30%, 88% 14%, 95% 14%, 95% 30%, 100% 30%, 100% 100%);
-  opacity: .74;
-}
-
-.view-mode .merchant-profile::after {
-  position: absolute;
-  z-index: -1;
-  right: 16%;
-  bottom: 28px;
-  left: 16%;
-  height: 1px;
-  content: "";
-  background: linear-gradient(90deg, transparent, rgba(242, 198, 92, .88), transparent);
-}
-
-.merchant-crown {
+.merchant-identity {
   position: relative;
-  z-index: 2;
-  width: min(100%, 238px);
-  min-height: 72px;
-  display: grid;
-  place-items: center;
-  margin: 0 auto -9px;
-  padding: 19px 22px 8px;
-  color: #fff1c5;
-  background: linear-gradient(180deg, rgba(45, 27, 13, .93), rgba(10, 31, 32, .95));
-  border: 1px solid rgba(251, 210, 103, .83);
-  border-radius: 5px 5px 20px 20px;
-  box-shadow: inset 0 0 0 3px rgba(110, 69, 25, .57), 0 10px 28px rgba(0, 0, 0, .4);
-}
-
-.merchant-crown::before,
-.merchant-crown::after {
-  position: absolute;
-  top: 7px;
-  width: 9px;
-  height: 9px;
-  content: "";
-  background: var(--gold);
-  box-shadow: 0 0 12px rgba(242, 198, 92, .65);
-  transform: rotate(45deg);
-}
-
-.merchant-crown::before { right: 16px; }
-.merchant-crown::after { left: 16px; }
-
-.crown-tip {
-  position: absolute;
-  top: -16px;
-  width: 30px;
-  height: 31px;
-  background: linear-gradient(135deg, #ffe6a0, #9d6920);
-  clip-path: polygon(50% 0, 100% 100%, 0 100%);
-  filter: drop-shadow(0 -1px 0 #f8d67b);
-}
-
-.crown-tip-one { right: 27px; }
-.crown-tip-two { right: calc(50% - 15px); top: -25px; height: 40px; }
-.crown-tip-three { left: 27px; }
-.crown-gem { position: absolute; top: 18px; color: #56d7cc; font-size: 10px; text-shadow: 0 0 8px #56d7cc; }
-.merchant-name { position: relative; z-index: 1; font: 900 clamp(27px, 8.5vw, 36px)/.85 Georgia, Tahoma, serif; letter-spacing: .04em; text-shadow: 0 2px 0 #5f3714, 0 0 14px rgba(250, 215, 128, .28); }
-.merchant-role { margin-top: 5px; color: #e5c16c; font-size: 8px; font-weight: 900; letter-spacing: .09em; }
-
-.merchant-stage {
-  position: relative;
-  z-index: 1;
-  width: clamp(126px, 38vw, 154px);
-  aspect-ratio: 1096 / 1435;
-  display: grid;
-  place-items: end center;
+  isolation: isolate;
+  width: min(100%, 474px);
   margin: 0 auto;
-  overflow: visible;
+  overflow: hidden;
+  border: 1px solid rgba(242, 198, 92, .7);
+  border-radius: 19px;
+  background: #06151d;
+  box-shadow: 0 15px 36px rgba(0, 0, 0, .35), inset 0 0 28px rgba(242, 198, 92, .1);
 }
 
-.merchant-aura {
-  position: absolute;
-  inset: 13px 6px 0;
-  background: radial-gradient(ellipse at 50% 36%, rgba(74, 207, 193, .38), rgba(242, 198, 92, .2) 33%, transparent 68%);
-  filter: blur(4px);
-}
+.identity-art { width: 100%; height: auto; display: block; }
 
-.merchant-portrait {
+.identity-name {
   position: relative;
   z-index: 1;
-  width: 100%;
-  height: auto;
-  display: block;
-  object-fit: contain;
-  object-position: center bottom;
-  filter: drop-shadow(0 8px 13px rgba(0, 0, 0, .52));
+  width: 66%;
+  display: grid;
+  align-content: center;
+  gap: 2px;
+  margin: -27% auto 8.5%;
+  padding: 7% 5% 5%;
+  color: #ffe4a4;
+  text-shadow: 0 2px 2px #2d1608, 0 0 17px rgba(242, 198, 92, .45);
 }
+
+.identity-name strong { font: 900 clamp(32px, 9vw, 49px)/.94 Georgia, Tahoma, serif; letter-spacing: .035em; }
+.identity-name span { color: #e5c16c; font-size: clamp(9px, 2.5vw, 13px); font-weight: 900; letter-spacing: .08em; }
 
 .merchant-copy {
   min-width: 0;
@@ -264,59 +189,61 @@ textarea:focus-visible {
   direction: rtl;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  gap: 11px;
+  margin-top: 12px;
   text-align: center;
 }
 
-.merchant-actions {
-  width: min(100%, 370px);
-  display: flex;
-  direction: rtl;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 10px;
-  padding: 7px 9px;
-  background: linear-gradient(90deg, rgba(3, 16, 20, .36), rgba(8, 42, 43, .74), rgba(3, 16, 20, .36));
-  border: 1px solid rgba(72, 179, 166, .26);
-  border-radius: 999px;
+.merchant-taglines {
+  width: min(100%, 470px);
+  padding: 8px 13px;
+  background: linear-gradient(90deg, transparent, rgba(4, 48, 51, .8), transparent);
+  border-block: 1px solid rgba(242, 198, 92, .22);
 }
 
-.merchant-tagline {
+.merchant-taglines p {
   margin: 0;
-  color: #e7e7cf;
-  font-size: 9px;
-  line-height: 1.6;
-  white-space: nowrap;
+  color: #f8d98d;
+  font-size: clamp(12px, 3.35vw, 16px);
+  font-weight: 800;
+  line-height: 1.55;
+  text-wrap: balance;
 }
+
+.merchant-taglines p:first-child { color: #ffe4a4; font-size: clamp(14px, 3.85vw, 19px); }
+.merchant-taglines p:nth-child(2) { color: #d7e2d8; }
+.merchant-taglines p span { color: var(--teal); padding-inline: 2px; }
 
 .merchant-contact {
-  width: fit-content;
-  max-width: 100%;
+  width: min(100%, 405px);
   display: inline-flex;
   direction: rtl;
   align-items: center;
-  gap: 7px;
-  padding: 6px 10px 6px 7px;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 7px 10px;
+  padding: 11px 17px;
   color: #fff7dc;
-  background: linear-gradient(135deg, rgba(4, 51, 44, .97), rgba(3, 32, 32, .97));
-  border: 1px solid rgba(37, 211, 102, .76);
-  border-radius: 999px;
-  box-shadow: 0 7px 18px rgba(0, 0, 0, .2);
-  font-size: 11px;
+  background: linear-gradient(135deg, #095748, #052e31);
+  border: 1px solid rgba(37, 211, 102, .9);
+  border-radius: 15px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, .3), inset 0 1px rgba(255, 255, 255, .14);
+  font-size: clamp(13px, 3.55vw, 17px);
   font-weight: 900;
   text-decoration: none;
+  transition: transform .16s ease, filter .16s ease;
 }
 
-.whatsapp-icon { width: 21px; height: 21px; flex: 0 0 auto; }
+.merchant-contact:hover { filter: brightness(1.12); transform: translateY(-1px); }
+.whatsapp-icon { width: 28px; height: 28px; flex: 0 0 auto; }
 .whatsapp-bubble { fill: #25d366; }
 .whatsapp-receiver { fill: #fff; transform: scale(.82); transform-origin: center; }
 
 .merchant-contact bdi {
-  overflow: hidden;
-  font-size: 11px;
-  letter-spacing: .025em;
-  text-overflow: ellipsis;
+  direction: ltr;
+  font-family: Arial, sans-serif;
+  font-size: 1.08em;
+  letter-spacing: .04em;
   white-space: nowrap;
 }
 
@@ -775,10 +702,6 @@ textarea:focus-visible {
 
 @media (min-width: 600px) {
   .editor-shell { padding-inline: 18px; }
-  .merchant-stage { width: 162px; }
-  .merchant-tagline { font-size: 11px; }
-  .merchant-contact { padding-inline: 11px 8px; }
-  .merchant-contact bdi { font-size: 12px; }
   .form-section { padding: 19px; }
   .field-grid:not(.two-columns) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .hero-catalog { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
@@ -795,12 +718,11 @@ textarea:focus-visible {
   .editor-shell { padding-inline: 8px; }
   .editor-header { grid-template-columns: 44px minmax(0, 1fr); }
   .brand-mark { width: 41px; height: 41px; }
-  .merchant-crown { width: 214px; }
-  .merchant-stage { width: 118px; }
-  .merchant-actions { gap: 6px; }
-  .merchant-tagline { font-size: 9px; }
-  .merchant-contact bdi { font-size: 10px; }
-  .merchant-contact { padding-inline: 8px; }
+  .identity-name { width: 72%; margin-top: -29%; }
+  .merchant-copy { gap: 9px; }
+  .merchant-taglines { padding-inline: 7px; }
+  .merchant-contact { gap: 6px 8px; padding: 10px 9px; }
+  .merchant-contact > span { display: none; }
   .listing-badge { grid-column: 2; margin-top: -8px; }
   .form-section { padding-inline: 10px; }
   .hero-catalog { grid-template-columns: repeat(2, minmax(0, 1fr)); }
