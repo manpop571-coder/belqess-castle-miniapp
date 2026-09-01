@@ -53,6 +53,11 @@ const FORM_KEYS = [
   "legion_capacity",
   "firing_power",
 ];
+const OPTIONAL_EQUIPMENT_KEYS = new Set([
+  "blue_equipment",
+  "purple_equipment",
+  "gold_equipment",
+]);
 
 const PUBLIC_FORM_KEYS = FORM_KEYS.filter(key => key !== "name" && key !== "phone");
 const PUBLIC_FORM_ALIASES = {
@@ -411,7 +416,11 @@ function moonSummary(values) {
 }
 
 function collectForm() {
-  return Object.fromEntries(ui.formFields.map(field => [field.dataset.formKey, field.value.trim()]));
+  return Object.fromEntries(ui.formFields.map(field => {
+    const key = field.dataset.formKey;
+    const value = field.value.trim();
+    return [key, OPTIONAL_EQUIPMENT_KEYS.has(key) && value === "" ? "0" : value];
+  }));
 }
 
 function normalizeForm(form) {
