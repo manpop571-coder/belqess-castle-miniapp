@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#041f27">
-  <title>بلقيس | اختيار أبطال القلعة</title>
+  <meta name="theme-color" content="#051b24">
+  <title>بلقيس | بيانات عرض القلعة</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="styles.css">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -16,90 +16,121 @@
       <div class="brand-mark" aria-hidden="true"><span>ب</span></div>
       <div class="brand-copy">
         <p>بلقيس لبيع القلاع</p>
-        <h1>أبطال القلعة</h1>
+        <h1>بيانات عرض القلعة</h1>
       </div>
       <span class="listing-badge" id="listingBadge">معاينة</span>
     </header>
 
-    <section class="editor-summary" aria-label="حالة اختيار الأبطال">
-      <div>
-        <span class="summary-label">الفئة الحالية</span>
-        <strong id="categoryTitle">المشاة</strong>
-      </div>
-      <div class="summary-count">
-        <span class="summary-label">تم اختيار</span>
-        <strong id="selectedCount">0 أبطال</strong>
-      </div>
+    <section class="welcome-card" aria-labelledby="welcomeTitle">
+      <span class="welcome-eyebrow">نموذج واحد بدل الأسئلة</span>
+      <h2 id="welcomeTitle">اكتب بياناتك واختر الأبطال ثم احفظ الإعلان</h2>
+      <p>كل البيانات ستُرسل إلى بوت بلقيس مرة واحدة. الحقول المعلّمة بنجمة مطلوبة.</p>
     </section>
 
-    <p class="editor-hint">
-      اضغط على صورة البطل وحدّد الأهلة. إجمالي الأصفر والأحمر لا يتجاوز 5.
-    </p>
+    <form id="castleForm" novalidate>
+      <section class="form-section" aria-labelledby="ownerTitle">
+        <div class="section-heading">
+          <span class="section-number">01</span>
+          <div><h2 id="ownerTitle">بيانات صاحب القلعة</h2><p>الاسم ووسيلة التواصل ومستوى القلعة</p></div>
+        </div>
+        <div class="field-grid">
+          <label class="form-field field-wide">
+            <span>الاسم <b aria-hidden="true">*</b></span>
+            <input data-form-key="name" name="name" type="text" autocomplete="name" maxlength="80" placeholder="اكتب اسمك" required>
+          </label>
+          <label class="form-field field-wide">
+            <span>رقم الهاتف <b aria-hidden="true">*</b></span>
+            <input data-form-key="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="30" pattern="\+?[0-9٠-٩۰-۹][0-9٠-٩۰-۹ ()-]{5,31}" placeholder="مثال: 01000000000" required>
+          </label>
+          <label class="form-field field-wide">
+            <span>مستوى القلعة <b aria-hidden="true">*</b></span>
+            <select data-form-key="castle_level" name="castle_level" required>
+              <option value="">اختر المستوى</option>
+              <option value="30">30</option><option value="31">31</option><option value="32">32</option>
+              <option value="33">33</option><option value="34">34</option><option value="35">35</option>
+            </select>
+          </label>
+        </div>
+      </section>
 
-    <section
-      class="hero-catalog"
-      id="heroCatalog"
-      aria-live="polite"
-      aria-label="قائمة الأبطال"
-    ></section>
+      <section class="form-section" aria-labelledby="powerTitle">
+        <div class="section-heading">
+          <span class="section-number">02</span>
+          <div><h2 id="powerTitle">قوة القلعة</h2><p>اكتب الأرقام كما تريد ظهورها في الإعلان</p></div>
+        </div>
+        <div class="field-grid two-columns">
+          <label class="form-field"><span>شارات المجد <b aria-hidden="true">*</b></span><input data-form-key="honor_badges" name="honor_badges" type="number" inputmode="numeric" min="0" step="1" placeholder="مثال: 120" required></label>
+          <label class="form-field"><span>قوة العلوم <b aria-hidden="true">*</b></span><input data-form-key="science_power" name="science_power" type="number" inputmode="numeric" min="0" max="225" step="1" placeholder="بحد أقصى 225" required></label>
+          <label class="form-field"><span>القوة المعوّضة <b aria-hidden="true">*</b></span><input data-form-key="compensated_power" name="compensated_power" type="number" inputmode="numeric" min="0" step="1" placeholder="مثال: 1200000000" required></label>
+          <label class="form-field"><span>القوة المصفّرة <b aria-hidden="true">*</b></span><input data-form-key="zeroed_power" name="zeroed_power" type="number" inputmode="numeric" min="0" step="1" placeholder="مثال: 700000000" required></label>
+          <label class="form-field"><span>الاحتياطي بالمليون <b aria-hidden="true">*</b></span><input data-form-key="reserve" name="reserve" type="number" inputmode="decimal" min="0" step="any" placeholder="مثال: 90 أو 90.5" required></label>
+          <label class="form-field"><span>الختم الذهبي <b aria-hidden="true">*</b></span><input data-form-key="golden_seal" name="golden_seal" type="number" inputmode="numeric" min="0" step="1" placeholder="العدد" required></label>
+        </div>
+      </section>
 
-    <div class="loading-state" id="loadingState" role="status">جاري تحميل أبطال القلعة…</div>
+      <section class="form-section" aria-labelledby="equipmentTitle">
+        <div class="section-heading">
+          <span class="section-number">03</span>
+          <div><h2 id="equipmentTitle">عتاد الحارس</h2><p>عدد القطع حسب اللون</p></div>
+        </div>
+        <div class="equipment-grid">
+          <label class="equipment-field blue-equipment"><span class="equipment-swatch" aria-hidden="true"></span><span class="equipment-copy">العتاد الأزرق <b aria-hidden="true">*</b></span><input data-form-key="blue_equipment" name="blue_equipment" type="number" inputmode="numeric" min="0" step="1" placeholder="0" required></label>
+          <label class="equipment-field purple-equipment"><span class="equipment-swatch" aria-hidden="true"></span><span class="equipment-copy">العتاد البنفسجي <b aria-hidden="true">*</b></span><input data-form-key="purple_equipment" name="purple_equipment" type="number" inputmode="numeric" min="0" step="1" placeholder="0" required></label>
+        </div>
+      </section>
 
-    <footer class="editor-dock">
-      <button class="save-all" id="saveAll" type="button" disabled>
-        <span>حفظ جميع الأبطال</span>
-        <small id="saveCount">0</small>
-      </button>
-      <span class="save-status" id="saveStatus" aria-live="polite"></span>
-      <nav class="category-nav" id="categoryNav" aria-label="فئات الأبطال"></nav>
-    </footer>
+      <section class="form-section heroes-section" aria-labelledby="heroesTitle">
+        <div class="section-heading">
+          <span class="section-number">04</span>
+          <div><h2 id="heroesTitle">أبطال القلعة</h2><p>اختر البطل وحدّد الأهلة الصفراء والحمراء</p></div>
+        </div>
+        <div class="editor-summary" aria-label="حالة اختيار الأبطال">
+          <div><span class="summary-label">الفئة الحالية</span><strong id="categoryTitle">المشاة</strong></div>
+          <div class="summary-count"><span class="summary-label">تم اختيار</span><strong id="selectedCount">0 أبطال</strong></div>
+        </div>
+        <p class="editor-hint">اضغط على صورة البطل. إجمالي الأهلة الصفراء والحمراء لا يتجاوز 5 لكل بطل.</p>
+        <nav class="category-nav" id="categoryNav" aria-label="فئات الأبطال"></nav>
+        <section class="hero-catalog" id="heroCatalog" aria-live="polite" aria-label="قائمة الأبطال"></section>
+        <div class="loading-state" id="loadingState" role="status">جاري تحميل أبطال القلعة…</div>
+      </section>
+
+      <section class="form-section" aria-labelledby="detailsTitle">
+        <div class="section-heading">
+          <span class="section-number">05</span>
+          <div><h2 id="detailsTitle">بيانات إضافية</h2><p>آخر تفاصيل يحتاجها الإعلان</p></div>
+        </div>
+        <div class="field-grid">
+          <label class="form-field field-wide">
+            <span>أبطال إضافيون</span>
+            <textarea data-form-key="additional_heroes" name="additional_heroes" maxlength="500" rows="4" placeholder="اكتب أي أبطال مهمين آخرين أو اتركها فارغة"></textarea>
+            <small>يمكنك كتابة الأبطال والبطاقات أو أي ملاحظات خاصة بهم.</small>
+          </label>
+          <label class="form-field field-wide"><span>حمولة الفيلق <b aria-hidden="true">*</b></span><input data-form-key="legion_capacity" name="legion_capacity" type="number" inputmode="numeric" min="0" step="1" placeholder="مثال: 350000" required></label>
+          <label class="form-field field-wide"><span>قوة الإشعال <b aria-hidden="true">*</b></span><input data-form-key="firing_power" name="firing_power" type="number" inputmode="numeric" min="1" step="1" placeholder="مثال: 8000000" required><small>اكتب الرقم كاملًا.</small></label>
+        </div>
+      </section>
+
+      <section class="submit-card" aria-label="حفظ بيانات الإعلان">
+        <div><strong>راجع البيانات قبل الحفظ</strong><span id="saveStatus" class="save-status" aria-live="polite">لن يُرسل شيء قبل الضغط على الحفظ.</span></div>
+        <button class="save-all" id="saveAll" type="submit" disabled><span>حفظ وإرسال الإعلان</span><small id="saveCount">0 بطل</small></button>
+      </section>
+    </form>
   </main>
 
   <div class="modal-layer" id="heroModal" hidden>
-    <section
-      class="hero-dialog"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="dialogHeroName"
-    >
+    <section class="hero-dialog" role="dialog" aria-modal="true" aria-labelledby="dialogHeroName">
       <button class="dialog-close" id="dialogClose" type="button" aria-label="إغلاق">×</button>
-
       <div class="dialog-hero">
-        <div class="dialog-portrait">
-          <img id="dialogHeroImage" alt="">
-          <span class="wake-badge" id="wakeBadge" hidden>صورة الاستيقاظ</span>
-        </div>
-        <div>
-          <span id="dialogCategory"></span>
-          <h2 id="dialogHeroName"></h2>
-          <div class="dialog-moons" id="dialogMoons" aria-live="polite"></div>
-        </div>
+        <div class="dialog-portrait"><img id="dialogHeroImage" alt=""><span class="wake-badge" id="wakeBadge" hidden>صورة الاستيقاظ</span></div>
+        <div><span id="dialogCategory"></span><h2 id="dialogHeroName"></h2><div class="dialog-moons" id="dialogMoons" aria-live="polite"></div></div>
       </div>
-
-      <fieldset class="moon-fieldset yellow-fieldset">
-        <legend>عدد الأهلة الصفراء</legend>
-        <div class="number-options" id="yellowOptions"></div>
-      </fieldset>
-
-      <fieldset class="moon-fieldset red-fieldset">
-        <legend>عدد الأهلة الحمراء</legend>
-        <div class="number-options" id="redOptions"></div>
-      </fieldset>
-
+      <fieldset class="moon-fieldset yellow-fieldset"><legend>عدد الأهلة الصفراء</legend><div class="number-options" id="yellowOptions"></div></fieldset>
+      <fieldset class="moon-fieldset red-fieldset"><legend>عدد الأهلة الحمراء</legend><div class="number-options" id="redOptions"></div></fieldset>
       <p class="moon-note" id="moonNote">إجمالي الأهلة: <strong>5 من 5</strong></p>
-
-      <div class="dialog-actions">
-        <button class="remove-hero" id="removeHero" type="button">إزالة البطل</button>
-        <button class="save-hero" id="saveHero" type="button">حفظ البطل</button>
-      </div>
+      <div class="dialog-actions"><button class="remove-hero" id="removeHero" type="button">إزالة البطل</button><button class="save-hero" id="saveHero" type="button">حفظ البطل</button></div>
     </section>
   </div>
 
-  <template id="errorTemplate">
-    <div class="error-state" role="alert">
-      <strong>تعذّر تحميل محرر الأبطال</strong>
-      <span>أعد فتح الصفحة أو جرّب مرة أخرى.</span>
-    </div>
-  </template>
+  <template id="errorTemplate"><div class="error-state" role="alert"><strong>تعذّر تحميل محرر الأبطال</strong><span>أعد فتح الصفحة أو جرّب مرة أخرى.</span></div></template>
 </body>
 </html>
