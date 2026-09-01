@@ -122,6 +122,149 @@ textarea:focus-visible {
   white-space: nowrap;
 }
 
+.merchant-profile { display: none; }
+
+.view-mode .editor-header { display: none; }
+
+.view-mode .merchant-profile {
+  position: relative;
+  isolation: isolate;
+  direction: ltr;
+  min-height: 190px;
+  display: grid;
+  grid-template-columns: 128px minmax(0, 1fr);
+  align-items: stretch;
+  gap: 14px;
+  margin: 2px 0 14px;
+  padding: 10px 14px 10px 10px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 83% 15%, rgba(242, 198, 92, .2), transparent 38%),
+    linear-gradient(118deg, rgba(12, 42, 45, .98), rgba(12, 10, 8, .98));
+  border: 1px solid rgba(242, 198, 92, .58);
+  border-radius: 24px;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, .34), inset 0 0 0 1px rgba(255, 241, 186, .05);
+}
+
+.view-mode .merchant-profile::before,
+.view-mode .merchant-profile::after {
+  position: absolute;
+  z-index: -1;
+  content: "";
+  pointer-events: none;
+}
+
+.view-mode .merchant-profile::before {
+  inset: 8px;
+  border: 1px solid rgba(217, 170, 85, .14);
+  border-radius: 17px;
+}
+
+.view-mode .merchant-profile::after {
+  top: 18px;
+  right: 18px;
+  width: 108px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(242, 198, 92, .6));
+  box-shadow: 0 142px 0 rgba(242, 198, 92, .22);
+}
+
+.merchant-portrait {
+  min-width: 0;
+  min-height: 170px;
+  background-image:
+    linear-gradient(to top, rgba(6, 21, 25, .24), transparent 48%),
+    url("assets/brand/belqois-identity.png");
+  background-repeat: no-repeat;
+  background-position: center, -15px -49px;
+  background-size: 100% 100%, 420px 370px;
+  border: 1px solid rgba(242, 198, 92, .7);
+  border-radius: 17px 7px 17px 7px;
+  box-shadow: inset 0 0 0 3px rgba(5, 23, 28, .52), 0 11px 24px rgba(0, 0, 0, .32);
+}
+
+.merchant-copy {
+  min-width: 0;
+  display: flex;
+  direction: rtl;
+  flex-direction: column;
+  justify-content: center;
+  padding: 8px 0 7px;
+  text-align: right;
+}
+
+.merchant-heading {
+  position: relative;
+  min-height: 55px;
+  display: block;
+  padding-left: 0;
+}
+
+.merchant-heading > div { min-width: 0; }
+.merchant-heading span:not(.merchant-crown) { display: block; color: #f7e1ae; font-size: 13px; font-weight: 800; }
+.merchant-heading strong {
+  display: block;
+  margin-top: 1px;
+  overflow: hidden;
+  color: #edc271;
+  direction: ltr;
+  font: 900 clamp(22px, 6vw, 32px)/1 Georgia, "Times New Roman", serif;
+  letter-spacing: .035em;
+  text-overflow: ellipsis;
+  text-shadow: 0 2px 0 #573514, 0 8px 24px rgba(0, 0, 0, .34);
+  white-space: nowrap;
+}
+
+.merchant-crown {
+  position: absolute;
+  top: -4px;
+  left: 0;
+  width: 52px;
+  height: 52px;
+  display: block;
+  background-image: url("assets/brand/belqois-identity.png");
+  background-repeat: no-repeat;
+  background-position: -173px -3px;
+  background-size: 292px 257px;
+  border: 2px solid rgba(242, 198, 92, .76);
+  outline: 1px solid rgba(9, 33, 37, .8);
+  border-radius: 50%;
+  box-shadow: 0 7px 20px rgba(0, 0, 0, .36);
+}
+
+.merchant-copy p {
+  margin: 13px 0 11px;
+  color: #d8e6de;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.merchant-contact {
+  width: fit-content;
+  max-width: 100%;
+  display: inline-flex;
+  direction: rtl;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 11px;
+  color: #171006;
+  background: linear-gradient(135deg, #edc271, #fff0bd);
+  border: 1px solid rgba(255, 244, 202, .82);
+  border-radius: 999px;
+  box-shadow: 0 7px 18px rgba(0, 0, 0, .24);
+  font-size: 11px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.merchant-contact bdi {
+  overflow: hidden;
+  font-size: 12px;
+  letter-spacing: .025em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .welcome-card {
   position: relative;
   margin: 17px 0 13px;
@@ -505,6 +648,14 @@ textarea:focus-visible {
 
 @media (min-width: 600px) {
   .editor-shell { padding-inline: 18px; }
+  .view-mode .merchant-profile { grid-template-columns: 158px minmax(0, 1fr); min-height: 220px; padding: 12px 22px 12px 12px; }
+  .merchant-portrait { min-height: 194px; background-position: center, -15px -57px; background-size: 100% 100%, 480px 423px; }
+  .merchant-heading { min-height: 67px; padding-left: 0; }
+  .merchant-heading strong { font-size: 37px; }
+  .merchant-crown { width: 64px; height: 64px; background-position: -214px -4px; background-size: 360px 317px; }
+  .merchant-copy p { font-size: 13px; }
+  .merchant-contact { padding: 9px 14px; font-size: 12px; }
+  .merchant-contact bdi { font-size: 14px; }
   .form-section { padding: 19px; }
   .field-grid:not(.two-columns) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .hero-catalog { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
@@ -520,6 +671,13 @@ textarea:focus-visible {
   .editor-shell { padding-inline: 8px; }
   .editor-header { grid-template-columns: 44px minmax(0, 1fr); }
   .brand-mark { width: 41px; height: 41px; }
+  .view-mode .merchant-profile { grid-template-columns: 106px minmax(0, 1fr); gap: 9px; padding-inline: 8px; }
+  .merchant-portrait { background-position: center, -17px -45px; background-size: 100% 100%, 390px 344px; }
+  .merchant-heading { min-height: 48px; padding-left: 0; }
+  .merchant-crown { width: 44px; height: 44px; background-position: -147px -3px; background-size: 248px 218px; }
+  .merchant-heading strong { font-size: 24px; }
+  .merchant-contact { padding-inline: 8px; }
+  .merchant-contact span { display: none; }
   .listing-badge { grid-column: 2; margin-top: -8px; }
   .form-section { padding-inline: 10px; }
   .hero-catalog { grid-template-columns: repeat(2, minmax(0, 1fr)); }
