@@ -607,6 +607,8 @@ textarea:focus-visible {
   text-align: center;
 }
 
+.view-mode .public-spec-card[hidden] { display: none !important; }
+
 .view-mode .public-spec-card::after {
   position: absolute;
   right: 25%;

@@ -6,9 +6,9 @@
   <meta name="theme-color" content="#051b24">
   <title>بلقيس | بيانات عرض القلعة</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="styles.css?v=20260901-6">
+  <link rel="stylesheet" href="styles.css?v=20260901-7">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script src="app.js?v=20260901-6" defer></script>
+  <script src="app.js?v=20260901-7" defer></script>
 </head>
 <body>
   <main class="editor-shell" id="heroEditor">
@@ -115,9 +115,14 @@
       <section class="form-section" aria-labelledby="detailsTitle">
         <div class="section-heading">
           <span class="section-number">05</span>
-          <div><h2 id="detailsTitle">بيانات إضافية</h2><p id="detailsDescription">آخر تفاصيل يحتاجها الإعلان</p></div>
+          <div><h2 id="detailsTitle">الحقيبة وبيانات إضافية</h2><p id="detailsDescription">اوصف حقيبتك ثم أكمل آخر تفاصيل الإعلان</p></div>
         </div>
         <div class="field-grid">
+          <label class="form-field field-wide bag-description-field">
+            <span id="bagDescriptionLabel">اوصف حقيبتك <b aria-hidden="true">*</b></span>
+            <textarea data-form-key="bag_description" name="bag_description" maxlength="600" rows="5" placeholder="مثال: موارد، تسريعات، ذهب، جواهر وأهم محتويات الحقيبة" required></textarea>
+            <small>سيظهر هذا النص للزبائن وفي البوستر؛ لا تكتب رقمك أو أي بيانات شخصية داخله.</small>
+          </label>
           <label class="form-field field-wide">
             <span>أبطال إضافيون</span>
             <textarea data-form-key="additional_heroes" name="additional_heroes" maxlength="500" rows="4" placeholder="اكتب أي أبطال مهمين آخرين أو اتركها فارغة"></textarea>

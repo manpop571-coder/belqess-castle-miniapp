@@ -44,6 +44,7 @@ const FORM_KEYS = [
   "golden_seal",
   "blue_equipment",
   "purple_equipment",
+  "bag_description",
   "additional_heroes",
   "legion_capacity",
   "firing_power",
@@ -60,6 +61,7 @@ const PUBLIC_FORM_ALIASES = {
   g: "golden_seal",
   e: "blue_equipment",
   u: "purple_equipment",
+  k: "bag_description",
   x: "additional_heroes",
   q: "legion_capacity",
   i: "firing_power",
@@ -74,11 +76,16 @@ const PUBLIC_FIELD_PRESENTATION = {
   golden_seal: { unit: "ختم" },
   blue_equipment: { unit: "قطعة" },
   purple_equipment: { unit: "قطعة" },
+  bag_description: { text: true },
   additional_heroes: { text: true },
   legion_capacity: { unit: "ألف", scale: 1_000 },
   firing_power: { unit: "مليون", scale: 1_000_000 },
 };
 const MAX_PUBLIC_VIEW_TOKEN_LENGTH = 12000;
+
+function formValueLimit(key) {
+  return key === "bag_description" ? 600 : 500;
+}
 
 const query = new URLSearchParams(window.location.search);
 const fragment = new URLSearchParams(window.location.hash.replace(/^#/, ""));
@@ -119,6 +126,7 @@ const ui = {
   powerDescription: document.getElementById("powerDescription"),
   equipmentDescription: document.getElementById("equipmentDescription"),
   detailsDescription: document.getElementById("detailsDescription"),
+  bagDescriptionLabel: document.getElementById("bagDescriptionLabel"),
   categoryTitle: document.getElementById("categoryTitle"),
   selectedCount: document.getElementById("selectedCount"),
   heroCatalog: document.getElementById("heroCatalog"),
@@ -211,7 +219,7 @@ function normalizePublicForm(rawForm) {
     if (expanded[key] === undefined && rawForm[alias] !== undefined) expanded[key] = rawForm[alias];
   }
   return Object.fromEntries(
-    PUBLIC_FORM_KEYS.map(key => [key, String(expanded[key] ?? "").slice(0, 500)])
+    PUBLIC_FORM_KEYS.map(key => [key, String(expanded[key] ?? "").slice(0, formValueLimit(key))])
   );
 }
 
@@ -396,7 +404,7 @@ function collectForm() {
 
 function normalizeForm(form) {
   if (!form || typeof form !== "object" || Array.isArray(form)) return {};
-  return Object.fromEntries(FORM_KEYS.map(key => [key, String(form[key] ?? "").slice(0, 500)]));
+  return Object.fromEntries(FORM_KEYS.map(key => [key, String(form[key] ?? "").slice(0, formValueLimit(key))]));
 }
 
 function applyForm(form) {
@@ -512,7 +520,8 @@ function setupPublicView() {
   ui.ownerDescription.textContent = "المستوى وأهم بيانات الحساب";
   ui.powerDescription.textContent = "الأرقام الأساسية في لمحة واضحة";
   ui.equipmentDescription.textContent = "القطع المميزة حسب اللون";
-  ui.detailsDescription.textContent = "باقي التفاصيل المهمة للقلعة";
+  ui.detailsDescription.textContent = "محتويات الحقيبة وباقي التفاصيل المهمة للقلعة";
+  ui.bagDescriptionLabel.textContent = "وصف الحقيبة";
   ui.heroesDescription.textContent = "تشكيلة الأبطال وحالة الأهلة لكل بطل";
   ui.editorHint.textContent = "اختر الفئة لمشاهدة أبطالها؛ وتظهر صورة الاستيقاظ عند وجود أهلة حمراء.";
   ui.viewPrice.hidden = !publicViewData;
@@ -728,7 +737,7 @@ async function saveAllData() {
     else setStatus("حُفظت مسودة على الجهاز؛ تعذّر الاتصال ببيانات الإعلان.", { error: true });
   } catch (error) {
     const message = error?.message === "telegram-payload-too-large"
-      ? "النص المكتوب أطول من الحد المسموح؛ اختصر الأبطال الإضافيين."
+      ? "النص المكتوب أطول من الحد المسموح؛ اختصر وصف الحقيبة أو الأبطال الإضافيين."
       : "تعذّر إرسال البيانات إلى Telegram.";
     setStatus(message, { error: true });
     haptic("error");
