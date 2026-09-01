@@ -6,9 +6,9 @@
   <meta name="theme-color" content="#051b24">
   <title>بلقيس | بيانات عرض القلعة</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="styles.css?v=20260901-4">
+  <link rel="stylesheet" href="styles.css?v=20260901-5">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script src="app.js?v=20260901-4" defer></script>
+  <script src="app.js?v=20260901-5" defer></script>
 </head>
 <body>
   <main class="editor-shell" id="heroEditor">
@@ -22,13 +22,16 @@
     </header>
 
     <section class="merchant-profile" aria-label="هوية التاجرة BELQOIS">
-      <div class="merchant-portrait" role="img" aria-label="صورة التاجرة BELQOIS"></div>
       <div class="merchant-copy">
         <div class="merchant-heading">
-          <div><span>التاجرة</span><strong lang="en">BELQOIS</strong></div>
-          <span class="merchant-crown" aria-hidden="true"></span>
+          <span class="merchant-kicker">التاجرة</span>
+          <div class="merchant-nameplate">
+            <span class="merchant-crown" aria-hidden="true"></span>
+            <strong lang="en">BELQOIS</strong>
+          </div>
         </div>
-        <p>كل خدمات لعبتك في مكان واحد</p>
+        <div class="merchant-portrait" role="img" aria-label="صورة التاجرة BELQOIS"></div>
+        <p class="merchant-tagline">كل خدمات لعبتك في مكان واحد</p>
         <a class="merchant-contact" href="https://wa.me/201020774509" target="_blank" rel="noopener noreferrer" aria-label="واتساب التاجرة BELQOIS على رقم موجب عشرين 1020774509">
           <span>واتساب</span><bdi dir="ltr">+201020774509</bdi>
         </a>
@@ -39,7 +42,7 @@
       <span class="welcome-eyebrow" id="welcomeEyebrow">نموذج واحد بدل الأسئلة</span>
       <h2 id="welcomeTitle">اكتب بياناتك واختر الأبطال ثم احفظ الإعلان</h2>
       <p id="welcomeText">كل البيانات ستُرسل إلى بوت بلقيس مرة واحدة. الحقول المعلّمة بنجمة مطلوبة.</p>
-      <div class="view-price" id="viewPrice" hidden><span>السعر</span><strong id="viewPriceValue"></strong></div>
+      <div class="view-price" id="viewPrice" hidden><strong id="viewPriceValue" dir="ltr"></strong></div>
     </section>
 
     <form id="castleForm" novalidate>
@@ -71,7 +74,7 @@
       <section class="form-section" aria-labelledby="powerTitle">
         <div class="section-heading">
           <span class="section-number">02</span>
-          <div><h2 id="powerTitle">قوة القلعة</h2><p>اكتب الأرقام كما تريد ظهورها في الإعلان</p></div>
+          <div><h2 id="powerTitle">قوة القلعة</h2><p id="powerDescription">اكتب الأرقام كما تريد ظهورها في الإعلان</p></div>
         </div>
         <div class="field-grid two-columns">
           <label class="form-field"><span>شارات المجد <b aria-hidden="true">*</b></span><input data-form-key="honor_badges" name="honor_badges" type="number" inputmode="numeric" min="0" step="1" placeholder="مثال: 120" required></label>
@@ -86,7 +89,7 @@
       <section class="form-section" aria-labelledby="equipmentTitle">
         <div class="section-heading">
           <span class="section-number">03</span>
-          <div><h2 id="equipmentTitle">عتاد الحارس</h2><p>عدد القطع حسب اللون</p></div>
+          <div><h2 id="equipmentTitle">عتاد الحارس</h2><p id="equipmentDescription">عدد القطع حسب اللون</p></div>
         </div>
         <div class="equipment-grid">
           <label class="equipment-field blue-equipment"><span class="equipment-swatch" aria-hidden="true"></span><span class="equipment-copy">العتاد الأزرق <b aria-hidden="true">*</b></span><input data-form-key="blue_equipment" name="blue_equipment" type="number" inputmode="numeric" min="0" step="1" placeholder="0" required></label>
@@ -112,7 +115,7 @@
       <section class="form-section" aria-labelledby="detailsTitle">
         <div class="section-heading">
           <span class="section-number">05</span>
-          <div><h2 id="detailsTitle">بيانات إضافية</h2><p>آخر تفاصيل يحتاجها الإعلان</p></div>
+          <div><h2 id="detailsTitle">بيانات إضافية</h2><p id="detailsDescription">آخر تفاصيل يحتاجها الإعلان</p></div>
         </div>
         <div class="field-grid">
           <label class="form-field field-wide">

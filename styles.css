@@ -129,21 +129,19 @@ textarea:focus-visible {
 .view-mode .merchant-profile {
   position: relative;
   isolation: isolate;
-  direction: ltr;
-  min-height: 190px;
-  display: grid;
-  grid-template-columns: 128px minmax(0, 1fr);
-  align-items: stretch;
-  gap: 14px;
+  direction: rtl;
+  display: block;
   margin: 2px 0 14px;
-  padding: 10px 14px 10px 10px;
+  padding: 23px 16px 20px;
   overflow: hidden;
   background:
-    radial-gradient(circle at 83% 15%, rgba(242, 198, 92, .2), transparent 38%),
-    linear-gradient(118deg, rgba(12, 42, 45, .98), rgba(12, 10, 8, .98));
+    radial-gradient(circle at 50% 12%, rgba(242, 198, 92, .2), transparent 31%),
+    radial-gradient(circle at 50% 58%, rgba(57, 216, 202, .1), transparent 43%),
+    linear-gradient(155deg, rgba(12, 42, 45, .99), rgba(12, 10, 8, .99));
   border: 1px solid rgba(242, 198, 92, .58);
   border-radius: 24px;
   box-shadow: 0 18px 42px rgba(0, 0, 0, .34), inset 0 0 0 1px rgba(255, 241, 186, .05);
+  text-align: center;
 }
 
 .view-mode .merchant-profile::before,
@@ -162,25 +160,27 @@ textarea:focus-visible {
 
 .view-mode .merchant-profile::after {
   top: 18px;
-  right: 18px;
-  width: 108px;
+  left: 50%;
+  width: min(62%, 260px);
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(242, 198, 92, .6));
-  box-shadow: 0 142px 0 rgba(242, 198, 92, .22);
+  background: linear-gradient(90deg, transparent, rgba(242, 198, 92, .62), transparent);
+  box-shadow: 0 374px 0 rgba(242, 198, 92, .22);
+  transform: translateX(-50%);
 }
 
 .merchant-portrait {
-  min-width: 0;
-  min-height: 170px;
+  width: clamp(164px, 46vw, 192px);
+  aspect-ratio: 4 / 5;
+  margin: 14px auto 0;
   background-image:
     linear-gradient(to top, rgba(6, 21, 25, .24), transparent 48%),
     url("assets/brand/belqois-identity.png");
   background-repeat: no-repeat;
-  background-position: center, -15px -49px;
-  background-size: 100% 100%, 420px 370px;
+  background-position: center, 6% 27%;
+  background-size: 100% 100%, 300% auto;
   border: 1px solid rgba(242, 198, 92, .7);
-  border-radius: 17px 7px 17px 7px;
-  box-shadow: inset 0 0 0 3px rgba(5, 23, 28, .52), 0 11px 24px rgba(0, 0, 0, .32);
+  border-radius: 24px 9px 24px 9px;
+  box-shadow: inset 0 0 0 4px rgba(5, 23, 28, .52), 0 13px 28px rgba(0, 0, 0, .38);
 }
 
 .merchant-copy {
@@ -188,54 +188,67 @@ textarea:focus-visible {
   display: flex;
   direction: rtl;
   flex-direction: column;
-  justify-content: center;
-  padding: 8px 0 7px;
-  text-align: right;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
 }
 
 .merchant-heading {
   position: relative;
-  min-height: 55px;
-  display: block;
-  padding-left: 0;
+  width: 100%;
+  display: grid;
+  justify-items: center;
 }
 
-.merchant-heading > div { min-width: 0; }
-.merchant-heading span:not(.merchant-crown) { display: block; color: #f7e1ae; font-size: 13px; font-weight: 800; }
+.merchant-kicker {
+  display: block;
+  color: #f7e1ae;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: .04em;
+}
+
+.merchant-nameplate {
+  position: relative;
+  min-width: min(100%, 260px);
+  padding-top: 47px;
+}
+
 .merchant-heading strong {
   display: block;
-  margin-top: 1px;
+  margin: 0 auto;
   overflow: hidden;
   color: #edc271;
   direction: ltr;
-  font: 900 clamp(22px, 6vw, 32px)/1 Georgia, "Times New Roman", serif;
-  letter-spacing: .035em;
+  font: 900 clamp(31px, 9vw, 42px)/1 Georgia, "Times New Roman", serif;
+  letter-spacing: .055em;
   text-overflow: ellipsis;
-  text-shadow: 0 2px 0 #573514, 0 8px 24px rgba(0, 0, 0, .34);
+  text-shadow: 0 2px 0 #573514, 0 8px 24px rgba(0, 0, 0, .44);
   white-space: nowrap;
 }
 
 .merchant-crown {
   position: absolute;
-  top: -4px;
-  left: 0;
-  width: 52px;
-  height: 52px;
+  top: -5px;
+  left: 50%;
+  width: 60px;
+  height: 60px;
   display: block;
   background-image: url("assets/brand/belqois-identity.png");
   background-repeat: no-repeat;
-  background-position: -173px -3px;
-  background-size: 292px 257px;
+  background-position: -200px -3px;
+  background-size: 337px 297px;
   border: 2px solid rgba(242, 198, 92, .76);
   outline: 1px solid rgba(9, 33, 37, .8);
   border-radius: 50%;
   box-shadow: 0 7px 20px rgba(0, 0, 0, .36);
+  transform: translateX(-50%);
 }
 
-.merchant-copy p {
-  margin: 13px 0 11px;
+.merchant-tagline {
+  margin: 14px 0 11px;
   color: #d8e6de;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.6;
 }
 
@@ -252,7 +265,7 @@ textarea:focus-visible {
   border: 1px solid rgba(255, 244, 202, .82);
   border-radius: 999px;
   box-shadow: 0 7px 18px rgba(0, 0, 0, .24);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 900;
   text-decoration: none;
 }
@@ -305,23 +318,25 @@ textarea:focus-visible {
   position: relative;
   z-index: 1;
   width: fit-content;
-  min-width: 136px;
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 14px;
+  min-width: 128px;
+  display: grid;
+  place-items: center;
   margin-top: 15px;
-  padding: 9px 13px;
+  padding: 10px 18px 9px;
   color: #302000;
   background: linear-gradient(135deg, var(--gold), #ffe19a);
   border: 1px solid rgba(255, 240, 185, .86);
-  border-radius: 12px;
+  border-radius: 999px;
   box-shadow: 0 8px 22px rgba(0, 0, 0, .2);
 }
 
 .view-price[hidden] { display: none; }
-.view-price span { font-size: 10px; font-weight: 800; }
-.view-price strong { font-size: 20px; }
+.view-price strong { direction: ltr; font: 900 28px/1 Georgia, "Times New Roman", serif; letter-spacing: .02em; }
+
+.view-mode .welcome-card { padding-block: 23px; text-align: center; }
+.view-mode .welcome-card h2 { margin-inline: auto; }
+.view-mode .welcome-eyebrow { font-size: 11px; }
+.view-mode .view-price { margin-inline: auto; }
 
 #castleForm { display: grid; gap: 12px; }
 
@@ -627,33 +642,100 @@ textarea:focus-visible {
 .view-mode .form-field b,
 .view-mode .equipment-copy b { display: none; }
 
-.view-mode .form-field input,
-.view-mode .form-field select,
-.view-mode .form-field textarea,
-.view-mode .equipment-field input {
-  color: var(--ink);
-  -webkit-text-fill-color: var(--ink);
-  caret-color: transparent;
-  background-color: rgba(3, 30, 37, .66);
-  border-color: rgba(57, 216, 202, .2);
-  box-shadow: none;
-  cursor: default;
-  opacity: 1;
-  pointer-events: none;
+.public-field-value { display: none; }
+
+.view-mode .public-spec-card {
+  position: relative;
+  min-height: 102px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 10px;
+  overflow: hidden;
+  color: #c1d8d5;
+  background:
+    radial-gradient(circle at 50% 115%, rgba(242, 198, 92, .13), transparent 48%),
+    linear-gradient(150deg, rgba(8, 55, 62, .92), rgba(3, 28, 35, .96));
+  border: 1px solid rgba(57, 216, 202, .22);
+  border-radius: 16px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .025), 0 8px 20px rgba(0, 0, 0, .12);
+  text-align: center;
 }
 
-.view-mode .form-field select { background-image: none; }
-.view-mode .form-field textarea { resize: none; }
+.view-mode .public-spec-card::after {
+  position: absolute;
+  right: 25%;
+  bottom: 0;
+  left: 25%;
+  height: 2px;
+  content: "";
+  background: linear-gradient(90deg, transparent, rgba(242, 198, 92, .72), transparent);
+}
+
+.view-mode .public-spec-card > span:not(.equipment-swatch),
+.view-mode .public-spec-card > .equipment-copy {
+  padding: 0;
+  color: #b9d4d1;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.view-mode .public-spec-card input,
+.view-mode .public-spec-card select,
+.view-mode .public-spec-card textarea,
+.view-mode .public-spec-card > small { display: none !important; }
+
+.view-mode .public-field-value {
+  min-width: 0;
+  display: flex;
+  direction: ltr;
+  align-items: baseline;
+  justify-content: center;
+  gap: 5px;
+  color: #fff6df;
+}
+
+.view-mode .public-field-value > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font: 900 clamp(19px, 5.8vw, 27px)/1.2 "Segoe UI", Tahoma, Arial, sans-serif;
+}
+
+.view-mode .public-field-value > small {
+  color: var(--gold);
+  font-size: 9px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.view-mode .public-field-value.is-text {
+  width: 100%;
+  direction: rtl;
+  align-items: flex-start;
+  justify-content: flex-start;
+  text-align: right;
+}
+
+.view-mode .public-field-value.is-text > span {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.8;
+}
+
+.view-mode .equipment-swatch { flex: 0 0 auto; }
 .view-mode .editor-hint { color: #b9d6d2; }
 
 @media (min-width: 600px) {
   .editor-shell { padding-inline: 18px; }
-  .view-mode .merchant-profile { grid-template-columns: 158px minmax(0, 1fr); min-height: 220px; padding: 12px 22px 12px 12px; }
-  .merchant-portrait { min-height: 194px; background-position: center, -15px -57px; background-size: 100% 100%, 480px 423px; }
-  .merchant-heading { min-height: 67px; padding-left: 0; }
-  .merchant-heading strong { font-size: 37px; }
-  .merchant-crown { width: 64px; height: 64px; background-position: -214px -4px; background-size: 360px 317px; }
-  .merchant-copy p { font-size: 13px; }
+  .view-mode .merchant-profile { padding-block: 27px 24px; }
+  .merchant-portrait { width: 202px; }
+  .merchant-nameplate { padding-top: 52px; }
+  .merchant-heading strong { font-size: 45px; }
+  .merchant-crown { width: 66px; height: 66px; background-position: -220px -4px; background-size: 371px 327px; }
+  .merchant-tagline { font-size: 13px; }
   .merchant-contact { padding: 9px 14px; font-size: 12px; }
   .merchant-contact bdi { font-size: 14px; }
   .form-section { padding: 19px; }
@@ -665,24 +747,23 @@ textarea:focus-visible {
 
 @media (max-width: 430px) {
   .field-grid.two-columns { grid-template-columns: minmax(0, 1fr); }
+  .view-mode .field-grid.two-columns { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 }
 
 @media (max-width: 350px) {
   .editor-shell { padding-inline: 8px; }
   .editor-header { grid-template-columns: 44px minmax(0, 1fr); }
   .brand-mark { width: 41px; height: 41px; }
-  .view-mode .merchant-profile { grid-template-columns: 106px minmax(0, 1fr); gap: 9px; padding-inline: 8px; }
-  .merchant-portrait { background-position: center, -17px -45px; background-size: 100% 100%, 390px 344px; }
-  .merchant-heading { min-height: 48px; padding-left: 0; }
-  .merchant-crown { width: 44px; height: 44px; background-position: -147px -3px; background-size: 248px 218px; }
-  .merchant-heading strong { font-size: 24px; }
+  .view-mode .merchant-profile { padding-inline: 10px; }
+  .merchant-portrait { width: 158px; }
+  .merchant-heading strong { font-size: 30px; }
   .merchant-contact { padding-inline: 8px; }
-  .merchant-contact span { display: none; }
   .listing-badge { grid-column: 2; margin-top: -8px; }
   .form-section { padding-inline: 10px; }
   .hero-catalog { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .category-button small { display: none; }
   .equipment-grid { grid-template-columns: minmax(0, 1fr); }
+  .view-mode .equipment-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .dialog-hero { grid-template-columns: 86px minmax(0, 1fr); }
   .dialog-portrait img { width: 86px; height: 86px; }
 }

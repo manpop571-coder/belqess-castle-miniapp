@@ -64,6 +64,19 @@ const PUBLIC_FORM_ALIASES = {
   q: "legion_capacity",
   i: "firing_power",
 };
+const PUBLIC_FIELD_PRESENTATION = {
+  honor_badges: { unit: "شارة" },
+  science_power: { unit: "مليون", scale: 1_000_000 },
+  compensated_power: { unit: "مليون", scale: 1_000_000 },
+  zeroed_power: { unit: "مليون", scale: 1_000_000 },
+  reserve: { unit: "مليون", scale: 1_000_000 },
+  golden_seal: { unit: "ختم" },
+  blue_equipment: { unit: "قطعة" },
+  purple_equipment: { unit: "قطعة" },
+  additional_heroes: { text: true },
+  legion_capacity: { unit: "ألف", scale: 1_000 },
+  firing_power: { unit: "مليون", scale: 1_000_000 },
+};
 const MAX_PUBLIC_VIEW_TOKEN_LENGTH = 12000;
 
 const query = new URLSearchParams(window.location.search);
@@ -102,6 +115,9 @@ const ui = {
   viewPriceValue: document.getElementById("viewPriceValue"),
   ownerTitle: document.getElementById("ownerTitle"),
   ownerDescription: document.getElementById("ownerDescription"),
+  powerDescription: document.getElementById("powerDescription"),
+  equipmentDescription: document.getElementById("equipmentDescription"),
+  detailsDescription: document.getElementById("detailsDescription"),
   categoryTitle: document.getElementById("categoryTitle"),
   selectedCount: document.getElementById("selectedCount"),
   heroCatalog: document.getElementById("heroCatalog"),
@@ -236,7 +252,66 @@ function decodePublicViewPayload(token) {
 }
 
 function formatPublicPrice(value) {
-  return new Intl.NumberFormat("ar-EG", { maximumFractionDigits: 2 }).format(value);
+  return `${new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(value)}$`;
+}
+
+function formatPublicFieldValue(rawValue, scale = 1) {
+  const raw = String(rawValue ?? "").trim();
+  if (!raw) return "—";
+  const normalized = raw.replaceAll(",", "");
+  const numeric = Number(normalized);
+  if (!Number.isFinite(numeric) || numeric < 0) return "غير محدد";
+  const scaled = scale > 1 && numeric >= scale ? numeric / scale : numeric;
+  return new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(scaled);
+}
+
+function renderPublicSpecifications() {
+  for (const field of ui.formFields) {
+    if (field.closest(".owner-private-field")) continue;
+    const container = field.closest(".form-field, .equipment-field");
+    if (!container) continue;
+
+    const key = field.dataset.formKey;
+    const presentation = PUBLIC_FIELD_PRESENTATION[key] || {};
+    const rawValue = field.value.trim();
+    const labelNode = container.querySelector(":scope > span:not(.equipment-swatch)");
+    const label = labelNode?.textContent.replace("*", "").trim() || key;
+    let output = container.querySelector(".public-field-value");
+    if (!output) {
+      output = document.createElement("output");
+      output.className = "public-field-value";
+      output.dataset.formOutput = key;
+      container.append(output);
+    }
+
+    field.hidden = true;
+    container.classList.add("public-spec-card");
+    if (presentation.text && !rawValue) {
+      container.hidden = true;
+      continue;
+    }
+    container.hidden = false;
+
+    const displayValue = presentation.text
+      ? rawValue
+      : formatPublicFieldValue(rawValue, presentation.scale);
+    output.classList.toggle("is-text", Boolean(presentation.text));
+    output.classList.toggle("is-empty", !rawValue);
+    output.replaceChildren();
+
+    const valueNode = document.createElement("span");
+    valueNode.textContent = displayValue;
+    output.append(valueNode);
+    if (presentation.unit && rawValue) {
+      const unitNode = document.createElement("small");
+      unitNode.textContent = presentation.unit;
+      output.append(unitNode);
+    }
+    output.setAttribute("aria-label", `${label}: ${displayValue}${presentation.unit && rawValue ? ` ${presentation.unit}` : ""}`);
+  }
+
+  const level = formatPublicFieldValue(publicViewData?.form?.castle_level);
+  if (level !== "—") ui.welcomeTitle.textContent = `قلعة مستوى ${level} — المواصفات والأبطال`;
 }
 
 function normalizeSelection(items) {
@@ -392,17 +467,20 @@ function setupPublicView() {
   document.body.classList.add("view-mode");
   document.title = `بلقيس | عرض القلعة ${publicViewData?.ad || ""}`.trim();
   ui.pageTitle.textContent = "عرض القلعة";
-  ui.welcomeEyebrow.textContent = "عرض من بلقيس";
-  ui.welcomeTitle.textContent = "تفاصيل القلعة والأبطال المختارين";
-  ui.welcomeText.textContent = "هذه نسخة للعرض فقط. البيانات لا يمكن تعديلها من هذه الصفحة.";
-  ui.ownerTitle.textContent = "بيانات القلعة";
-  ui.ownerDescription.textContent = "المواصفات العامة المعتمدة في الإعلان";
-  ui.heroesDescription.textContent = "الأبطال المختارون وحالة الأهلة لكل بطل";
-  ui.editorHint.textContent = "تنقّل بين الفئات لمشاهدة الأبطال المختارين. تظهر صورة الاستيقاظ عند وجود أهلة حمراء.";
+  ui.welcomeEyebrow.textContent = publicViewData ? `إعلان رقم ${publicViewData.ad} من بلقيس` : "عرض قلعة من بلقيس";
+  ui.welcomeTitle.textContent = "مواصفات القلعة وأبطالها";
+  ui.welcomeText.hidden = true;
+  ui.ownerTitle.textContent = "مواصفات القلعة";
+  ui.ownerDescription.textContent = "المستوى وأهم بيانات الحساب";
+  ui.powerDescription.textContent = "الأرقام الأساسية في لمحة واضحة";
+  ui.equipmentDescription.textContent = "القطع المميزة حسب اللون";
+  ui.detailsDescription.textContent = "باقي التفاصيل المهمة للقلعة";
+  ui.heroesDescription.textContent = "تشكيلة الأبطال وحالة الأهلة لكل بطل";
+  ui.editorHint.textContent = "اختر الفئة لمشاهدة أبطالها؛ وتظهر صورة الاستيقاظ عند وجود أهلة حمراء.";
   ui.viewPrice.hidden = !publicViewData;
   ui.viewPriceValue.textContent = publicViewData ? formatPublicPrice(publicViewData.price) : "";
   ui.listingBadge.textContent = publicViewData ? `الإعلان ${publicViewData.ad}` : "رابط غير صالح";
-  ui.form.setAttribute("aria-label", "تفاصيل إعلان القلعة للعرض فقط");
+  ui.form.setAttribute("aria-label", "مواصفات إعلان القلعة");
   ui.modal.hidden = true;
   ui.saveAll.disabled = true;
 
@@ -669,6 +747,7 @@ async function initialize() {
       state.selected = normalizeSelection(publicViewData.heroes);
       if (state.selected.size !== publicViewData.heroes.length) throw new Error("invalid-public-selection");
       applyForm(publicViewData.form);
+      renderPublicSpecifications();
       const firstSelectedHero = state.heroes.find(hero => state.selected.has(hero.id));
       if (firstSelectedHero) state.category = firstSelectedHero.category;
     } else {
