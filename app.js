@@ -2,7 +2,7 @@ const CATALOG_URL = "data/heroes.json";
 const HERO_ROOT = "assets/game/heroes/";
 const WAKE_ROOT = "assets/game/wake/";
 const TELEGRAM_PAYLOAD_LIMIT = 4096;
-const WHATSAPP_PHONE = "201020774509";
+const WHATSAPP_PHONE = "201007123306";
 
 const HERO_DISPLAY = [
   { id: 55, name: "مختار", category: "infantry" },
